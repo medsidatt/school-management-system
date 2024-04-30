@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->bigInteger('nni')->unique();
+            $table->unsignedBigInteger('nni')->unique();
             // parent data
             $table->char('sex');
             $table->date('date_of_birth');

@@ -41,10 +41,6 @@ class StudentController extends Controller
     public function store(StorePostRequest $request): RedirectResponse
     {
 
-        $request->validated();
-
-
-        $parent_id = 0;
         $parent_data = [
             'first_name' => $request->p_first_name,
             'last_name' => $request->p_last_name,
@@ -87,58 +83,23 @@ class StudentController extends Controller
 
 
     public function view($id) {
-        $student = Student::join('parents as p', 'parent', 'p.id')
-            ->join('classes as c', 'class', 'c.id')
-            ->where('students.id',  $id)
-            ->orderBy('students.date_of_birth')
-            ->select(
-                'students.*',
-                'c.id as c_id',
-                'c.name as name',
-                'p.id as p_id',
-                'p.first_name as p_fn',
-                'p.nni as p_nni',
-                'p.tel as p_tel',
-                'p.last_name as p_ln',
-                'p.sex as p_sex',
-                'p.date_of_birth as p_dob'
-            )
-            ->first();
-
-        if ($student == null) {
-            return redirect('notfound');
-        }
-        return view('students.show', compact('student'));
+        $student = $this->getStudentById($id);
+        return view('students.show', [
+            'student' => $student
+        ]);
     }
 
     public function edit($id) {
-        $student = Student::join('parents as p', 'parent', 'p.id')
-            ->join('classes as c', 'class', 'c.id')
-            ->where('students.id',  $id)
-            ->orderBy('students.date_of_birth')
-            ->select(
-                'students.*',
-                'c.id as c_id',
-                'c.name as c_name',
-                'p.id as p_id',
-                'p.first_name as p_fn',
-                'p.nni as p_nni',
-                'p.tel as p_tel',
-                'p.last_name as p_ln',
-                'p.sex as p_sex',
-                'p.date_of_birth as p_dob'
-            )
-            ->first();
-        if (!$student) {
-            return redirect('not_found');
-        }
+        $student = $this->getStudentById($id);
         $classes = Classes::all();
-        return view('students.create', compact('student'))->with('classes', $classes);
+        return view('students.create', [
+            'student' => $student
+        ])->with('classes', $classes);
     }
 
-    public function update(StorePostRequest $request, $id) {
+    public function update(StorePostRequest $request) {
 
-        $request->validated();
+//        $validator->validated();
 
         $parent_data = [
             'first_name' => $request->p_first_name,
@@ -174,23 +135,7 @@ class StudentController extends Controller
 
     public function destroy($id)
     {
-        $student = Student::join('parents as p', 'parent', 'p.id')
-            ->where('students.id',  $id)
-            ->orderBy('students.date_of_birth')
-            ->select(
-                'students.*',
-                'p.id as p_id',
-                'p.first_name as p_fn',
-                'p.nni as p_nni',
-                'p.tel as p_tel',
-                'p.last_name as p_ln',
-                'p.sex as p_sex',
-                'p.date_of_birth as p_dob'
-            )
-            ->first();
-        if (!$student) {
-            return redirect('not_found');
-        }
+        $student = $this->getStudentById($id);
         $parent = Student::select('parent', $student->p_id)
             ->where('parent', $student->p_id);
 
@@ -203,10 +148,32 @@ class StudentController extends Controller
             $parent->delete();
             return redirect()->back()->with('success', 'Suprimer avec succès');
         }
-
-
     }
 
+    private function getStudentById($id)
+    {
+        $student = Student::join('parents as p', 'parent', 'p.id')
+            ->join('classes as c', 'class', 'c.id')
+            ->where('students.id',  $id)
+            ->orderBy('students.date_of_birth')
+            ->select(
+                'students.*',
+                'c.id as c_id',
+                'c.name as name',
+                'p.id as p_id',
+                'p.first_name as p_fn',
+                'p.nni as p_nni',
+                'p.tel as p_tel',
+                'p.last_name as p_ln',
+                'p.sex as p_sex',
+                'p.date_of_birth as p_dob'
+            )
+            ->first();
 
+        if ($student == null) {
+            return redirect('notfound');
+        }
+        return $student;
+    }
 
 }

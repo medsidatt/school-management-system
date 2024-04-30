@@ -19,15 +19,21 @@ class ClassesController extends Controller
     public function index() : View
     {
 
-        $classes = Classes::with('subjects')->get()->map(function ($class) {
+        /*$classes = Classes::with('subjects')->get()->map(function ($class) {
             return [
                 'id' => $class->id,
                 'name' => $class->name,
                 'subjects' => $class->subjects->pluck('code')
             ];
-        });
+        });*/
 
-        return view('classes.index', compact('classes'));
+        $classes = Classes::all();
+
+        //dd($classes);
+
+        return view('classes.index', [
+            'classes' => $classes
+        ]);
     }
 
     public function create() : View

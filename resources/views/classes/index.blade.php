@@ -41,23 +41,25 @@
                             <tbody>
                             @foreach($classes as $class)
                                 <tr>
-                                    <td>{{ $class['name'] }}</td>
+                                    <td>{{ $class->name }}</td>
                                     <td>
-                                        @foreach($class['subjects'] as $subject)
+                                        @foreach($class->subjects as $subject)
                                             @if(!$loop->last)
                                                 <span
-                                                    class="border border-secondary border-radius bg-secondary-light p-1">{{ $subject }}</span>
+                                                    class="border border-secondary border-radius bg-secondary-light p-1">{{ $subject->code }}</span>
                                             @endif
                                         @endforeach
                                     </td>
                                     <td>
                                         <!-- You can adjust this part based on your actual data -->
                                         <span
-                                            class="border border-secondary border-radius bg-secondary-light p-1">50</span>
+                                            class="border border-secondary border-radius bg-secondary-light p-1">
+                                            {{$class->students->count()}}
+                                        </span>
                                     </td>
                                     <td>
                                         <a href=""><i class="bi bi-eye text-secondary"></i></a>
-                                        <a href="{{ route('classes.edit', $class['id']) }}"><i class="bi bi-pencil-square text-primary"></i></a>
+                                        <a href="{{ route('classes.edit', $class->id) }}"><i class="bi bi-pencil-square text-primary"></i></a>
                                         <a href=""><i class="bi bi-trash text-danger"></i></a>
                                     </td>
                                 </tr>

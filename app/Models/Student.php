@@ -16,7 +16,7 @@ class Student extends Model
 
     public function classes()
     {
-        return $this->belongsTo(Classes::class, 'id');
+        return $this->belongsTo(Classes::class, 'class');
     }
 
     protected $fillable = [

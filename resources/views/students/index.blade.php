@@ -30,7 +30,7 @@
                         </div>
 
                         <!-- Table with stripped rows -->
-                        <table class="table table-striped table-responsive">
+                        <table id="myTable" class="table table-striped table-responsive">
                             <thead class="table-bordered">
                             <tr>
                                 <th>#</th>
@@ -61,13 +61,21 @@
                                     <td>{{ $student->c_name }}</td>
                                     <td>{{ $student->date_of_birth }}</td>
                                     <td>
-                                        <a href="{{ route('students.view', $student->id) }}"><i
-                                                class="bi bi-eye text-secondary"></i></a>
-                                        <a href="{{ route('students.edit', $student->id) }}"><i
-                                                class="bi bi-pencil-square text-primary"></i></a>
-                                        <a href="#"
-                                           data-bs-toggle="modal" data-bs-target="#deleteModel_{{ $student->id }}">
-                                            <i class="bi bi-trash text-danger"></i></a>
+                                        <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="{{ route('students.view', $student->id) }}"><i
+                                                        class="bi bi-eye text-secondary"></i></a>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="{{ route('students.edit', $student->id) }}"><i
+                                                        class="bi bi-pencil-square text-primary"></i></a>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="#"
+                                                   data-bs-toggle="modal" data-bs-target="#deleteModel_{{ $student->id }}">
+                                                    <i class="bi bi-trash text-danger"></i></a>
+                                            </button>
+                                        </div>
 
                                         <div class="modal fade" id="deleteModel_{{ $student->id }}" tabindex="-1"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">

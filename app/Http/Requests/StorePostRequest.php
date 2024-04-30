@@ -6,43 +6,69 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StorePostRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
+
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'p_first_name' => 'required',
             'p_last_name' => 'required',
             'p_sex' => 'required',
-            'p_tel' => "required|unique:parents,tel,$this->p_id|digits:8|numeric",
-            'p_date_of_birth' => 'required|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(100)->format('Y-m-d'),
-            'p_nni' => "required|numeric|digits:10|unique:parents,tel,$this->p_id",
+            'p_tel' => [
+                'required',
+                'unique:parents,tel,' . $this->p_id,
+                'digits:8',
+                'numeric',
+                'regex:/^(?:2|3|4)\d{7}$/'
+            ],
+            'p_date_of_birth' => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+                'after_or_equal:' . now()->subYears(100)->format('Y-m-d')
+            ],
+
+            'p_nni' => [
+                'required',
+                'numeric',
+                'digits:10',
+                "unique:parents,nni,$this->p_id"
+            ],
 
             'first_name' => 'required',
             'last_name' => 'required',
             'sex' => 'required',
             'class' => 'required',
-            'date_of_birth' => 'required|date|before_or_equal:' . now()->subYears(13)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(23)->format('Y-m-d'),
+            'date_of_birth' => [
+                'required',
+                'date',
+                'before_or_equal:' . now()->subYears(13)->format('Y-m-d'),
+                'after_or_equal:' . now()->subYears(23)->format('Y-m-d')
+            ],
             'rim' => "required|unique:students,rim,$this->id|numeric|digits:7",
         ];
     }
 
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if ($this->request->get('p_nni') % 97 !== 1) {
+                $validator->errors()->add('p_nni', 'Le nni est invalide');
+            }
+        });
+    }
     public function messages(): array
     {
         return [
-            'date_of_birth.before_or_equal' => 'The student must be at most 13 years old.',
-            'date_of_birth.after_or_equal' => 'The student must be at least 23 years old.',
+            'p_tel.regex' => 'Le numero telefone doit comence par 2, 3 ou 4',
+            'date_of_birth.before_or_equal' => 'L\'étudiant doit être âgé d\'au moin 13 ans.',
+            'date_of_birth.after_or_equal' => 'L\'étudiant doit être âgé d\'au plus 23 ans.',
+            'p_date_of_birth.before_or_equal' => 'Le parent doit être âgé d\'au moin 25 ans.',
+            'p_date_of_birth.after_or_equal' => 'Le parent doit être âgé d\'au plus 100 ans.',
             'required' => 'L\'attribut :attribute est obligatoire'
         ];
     }

@@ -67,10 +67,10 @@
                                     <td>{{ $teacher->sex }}</td>
                                     <td>{{ $teacher->date_of_birth }}</td>
                                     <td>
-                                        <span
-                                            class="border border-secondary border-radius bg-secondary-light p-1">1 AS</span>
-                                        <span
-                                            class="border border-secondary border-radius bg-secondary-light p-1">3 AS</span>
+{{--                                        <span--}}
+{{--                                            class="border border-secondary border-radius bg-secondary-light p-1">1 AS</span>--}}
+{{--                                        <span--}}
+{{--                                            class="border border-secondary border-radius bg-secondary-light p-1">3 AS</span>--}}
                                     </td>
                                     <td>
                                         <span
@@ -79,13 +79,21 @@
                                             class="border border-secondary border-radius bg-secondary-light p-1">IR</span>
                                     </td>
                                     <td>
-                                        <a href="{{ route('teachers.show', $teacher->id) }}"><i class="bi bi-eye text-secondary"></i></a>
-                                        <a href="{{ route('teachers.edit', $teacher->id) }}"><i class="bi bi-pencil-square text-primary"></i></a>
-
-                                        <a
-                                            data-bs-toggle="modal" data-bs-target="#deleteModel_{{ $teacher->id }}">
-                                            <i class="bi bi-trash text-danger"></i></a>
-
+                                        <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="{{ route('teachers.show', $teacher->id) }}"><i
+                                                        class="bi bi-eye text-secondary"></i></a>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="{{ route('teachers.edit', $teacher->id) }}"><i
+                                                        class="bi bi-pencil-square text-primary"></i></a>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-primary">
+                                                <a href="#"
+                                                   data-bs-toggle="modal" data-bs-target="#deleteModel_{{ $teacher->id }}">
+                                                    <i class="bi bi-trash text-danger"></i></a>
+                                            </button>
+                                        </div>
                                         <div class="modal fade" id="deleteModel_{{ $teacher->id }}" tabindex="-1"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
