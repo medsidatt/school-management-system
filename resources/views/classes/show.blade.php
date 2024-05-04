@@ -4,12 +4,12 @@
 @section('content')
 
     <div class="pagetitle">
-        <h1>Informations d'etudiant</h1>
+        <h1>Informations d'un classe</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('students') }}">Eleves</a></li>
-                <li class="breadcrumb-item">Eleve</li>
+                <li class="breadcrumb-item"><a href="{{ route('classes') }}">Classes</a></li>
+                <li class="breadcrumb-item">classe</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -22,7 +22,7 @@
                     <div class="card-body">
 
                         <div class="row">
-                            <div class="col"><h5 class="card-title">Le nom de l'etudiant</h5></div>
+                            <div class="col"><h5 class="card-title">{{ $class->name }}</h5></div>
 
                         </div>
 

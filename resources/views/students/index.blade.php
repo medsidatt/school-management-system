@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-lg-12">
 
-                <div class="card">
+                <div class="card w-auto">
                     <div class="card-body">
 
                         <div class="row">
@@ -30,93 +30,54 @@
                         </div>
 
                         <!-- Table with stripped rows -->
-                        <table id="myTable" class="table table-striped table-responsive">
+                        <table id="students" class="table table-striped table-responsive">
                             <thead class="table-bordered">
                             <tr>
                                 <th>#</th>
                                 <th>Photo</th>
                                 <th>RIM</th>
                                 <th>Nom</th>
-                                <th>Nom de parent</th>
                                 <th>Sexe</th>
                                 <th>Classe</th>
                                 <th data-type="date" data-format="YYYY/DD/MM">Date de naissance</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            @foreach($students as $student)
-                                <tr>
-                                    <td>{{ $student->id }}</td>
-                                    <td>
-                                        <img src="{{ asset('./assets/img/profile-img.jpg') }}"
-                                             width="30"
-                                             class="rounded-circle image">
-                                    <td>{{ $student->rim }}</td>
+                            <tbody></tbody>
 
-                                    </td>
-                                    <td>{{ $student->first_name . ' ' . $student->last_name }}</td>
-                                    <td>{{ $student->p_fn . ' ' . $student->p_ln }}</td>
-                                    <td>{{ $student->sex }}</td>
-                                    <td>{{ $student->c_name }}</td>
-                                    <td>{{ $student->date_of_birth }}</td>
-                                    <td>
-                                        <div class="btn-group" role="group" aria-label="Basic outlined example">
-                                            <button type="button" class="btn btn-outline-primary">
-                                                <a href="{{ route('students.view', $student->id) }}"><i
-                                                        class="bi bi-eye text-secondary"></i></a>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-primary">
-                                                <a href="{{ route('students.edit', $student->id) }}"><i
-                                                        class="bi bi-pencil-square text-primary"></i></a>
-                                            </button>
-                                            <button type="button" class="btn btn-outline-primary">
-                                                <a href="#"
-                                                   data-bs-toggle="modal" data-bs-target="#deleteModel_{{ $student->id }}">
-                                                    <i class="bi bi-trash text-danger"></i></a>
-                                            </button>
-                                        </div>
 
-                                        <div class="modal fade" id="deleteModel_{{ $student->id }}" tabindex="-1"
-                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <form action="{{ route('students.delete', $student->id) }}" method="post">
-                                                        @method('delete')
-                                                        @csrf
+                            <div class="modal fade" id="student-modal" tabindex="-1"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
 
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Suprimer
-                                                                un
-                                                                etudiant</h1>
-                                                            <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal"
-                                                                    aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-
-                                                            <h5 class="text-center"> Voulez vous suprimer cette
-                                                                etudiant
-                                                                - {{ $student->first_name . ' ' .  $student->last_name}}
-                                                                ?
-                                                            </h5>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Returner
-                                                            </button>
-                                                            <button type="submit" class="btn btn-primary">Suprimer
-                                                            </button>
-                                                        </div>
-                                                    </form>
-
-                                                </div>
+                                        <form action="javascript:void(0)" id="deleteForm" name="deleteForm"
+                                              method="POST" enctype="multipart/form-data">
+                                            @method('delete')
+                                            @csrf
+                                            <div class="modal-header">
+                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Suprimer
+                                                    un
+                                                    etudiant</h1>
+                                                <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
+                                            <div class="modal-body">
+                                                <h1 id="student-message"></h1>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Returner
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Suprimer
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
                         </table>
                         <!-- End Table with stripped rows -->
 
@@ -126,5 +87,88 @@
             </div>
         </div>
     </section>
+
+    <script>
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('#students').DataTable({
+                language: {
+                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                    infoEmpty: 'Aucun enregistrement disponible',
+                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                    zeroRecords: 'Rien trouvé - désolé',
+                    searchPlaceholder: 'Recherche',
+                    search: 'Rechercher',
+                },
+                processing: true,
+                serverSide: true,
+                ajax: "{{ url('students') }}",
+                columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'rim',
+                        name: 'rim'
+                    },
+                    {
+                        data: 'first_name',
+                        name: 'first_name'
+                    },
+                    {
+                        data: 'sex',
+                        name: 'sex'
+                    },
+                    {
+                        data: 'classes.name',
+                        name: 'classes.name'
+                    },
+                    {
+                        data: 'date_of_birth',
+                        name: 'date_of_birth'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false
+                    },
+                ],
+                order: [
+                    [0, 'desc']
+                ]
+            });
+
+        });
+
+        function deleteFunc(id) {
+            if (confirm("Delete record?") == true) {
+                var id = id;
+                // ajax
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('delete-student') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        var oTable = $('#students').dataTable();
+                        oTable.fnDraw(false);
+                    }
+                });
+            }
+        }
+
+    </script>
 
 @endsection

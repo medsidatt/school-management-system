@@ -11,7 +11,7 @@ class StudentParent extends Model
     protected $table = 'parents';
     public function students()
     {
-        return $this->hasMany(Student::class, 'parent');
+        return $this->hasMany(Student::class, 'id');
     }
 
     protected $fillable = [

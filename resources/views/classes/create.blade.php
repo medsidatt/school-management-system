@@ -27,6 +27,7 @@
     @if(isset($class))
         <form action="{{ route('classes.edit', $class->id) }}" method="post">
             @method('put')
+            <input type="hidden" name="id" value="{{ $class->id }}">
             @else
                 <form action="{{ route('classes.create') }}" method="post">
                     @endif
@@ -52,7 +53,8 @@
                                     <div class="col-sm-10 offset-sm-2">
                                         @foreach($subjects as $subject)
                                             <div class="form-check">
-                                                <input class="form-check-input" name="subject[]" type="checkbox" id="gridCheck_{{ $subject->code }}"
+                                                <input class="form-check-input" name="subject[]" type="checkbox"
+                                                       {{ (isset($class_subjects) && in_array($subject->id, $class_subjects)) ? 'checked' : '' }} id="gridCheck_{{ $subject->code }}"
                                                        value="{{ $subject->id }}">
                                                 <label class="form-check-label" for="gridCheck_{{ $subject->code }}">
                                                     {{ $subject->name }}

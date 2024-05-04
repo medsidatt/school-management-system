@@ -17,7 +17,7 @@ class ClassPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|unique:classes,name,5'
+            'name' => 'required|unique:classes,name,'.$this->id
         ];
     }
 

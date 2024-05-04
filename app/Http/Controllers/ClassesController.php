@@ -16,30 +16,21 @@ use Illuminate\View\View;
 class ClassesController extends Controller
 {
 
-    public function index() : View
+    public function index(): View
     {
-
-        /*$classes = Classes::with('subjects')->get()->map(function ($class) {
-            return [
-                'id' => $class->id,
-                'name' => $class->name,
-                'subjects' => $class->subjects->pluck('code')
-            ];
-        });*/
-
         $classes = Classes::all();
-
-        //dd($classes);
 
         return view('classes.index', [
             'classes' => $classes
         ]);
     }
 
-    public function create() : View
+    public function create(): View
     {
         $subjects = Subjects::all()->sortBy('name');
-        return view('classes.create')->with('subjects', $subjects);
+        return view('classes.create', [
+            'subjects'=> $subjects
+        ]);
     }
 
     public function store(ClassPostRequest $request): RedirectResponse
@@ -49,7 +40,7 @@ class ClassesController extends Controller
         try {
             DB::beginTransaction();
             $class = Classes::create($validated);
-            $class->subjects()->attach($request->subject, ['coef' => 1]);
+            $class->subjects()->attach($request->subject);
             DB::commit();
             return redirect()->back()->with('success', 'Ajouter avec succès');
 
@@ -61,18 +52,34 @@ class ClassesController extends Controller
 
     }
 
-    public function edit($id) : View|RedirectResponse
+
+    public function show($id): View
+    {
+        $class = Classes::with('students', 'subjects')->find($id);
+
+        return view('classes.show', [
+            'class' => $class
+        ]);
+    }
+
+
+    public function edit($id): View|RedirectResponse
     {
 
         try {
             $class = Classes::with('subjects')->find($id);
-            $formattedClass = [
-                'name' => $class->name,
-                'subjects' => $class->subjects->pluck('code')->toArray()
-            ];
+            $class_subjects = array();
+            foreach ($class->subjects as $subject) {
+                $class_subjects[] = $subject->id;
+            }
             $subjects = Subjects::all()->sortBy('name');
-            return view('classes.create', compact('subjects', 'class'));
-        }catch (\Exception) {
+            return view('classes.create', [
+                'subjects' => $subjects,
+                'class' => $class,
+                'class_subjects' => $class_subjects
+            ]);
+//                compact('subjects', 'class'));
+        } catch (\Exception) {
             return redirect('not_found');
         }
 
@@ -96,5 +103,11 @@ class ClassesController extends Controller
             return redirect()->back()->with('fail', 'Erreur de modifier cet étudiant');
 
         }
+    }
+
+    public function destroy($id)
+    {
+        $class = Classes::find($id);
+        $class->delete();
     }
 }

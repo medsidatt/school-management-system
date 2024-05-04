@@ -15,10 +15,7 @@ class Classes extends Model
         'name'
     ];
 
-    /*protected $with = [
-        'students',
-        'subjects'
-    ];*/
+
 
     public function students(): HasMany
     {
@@ -29,6 +26,5 @@ class Classes extends Model
     {
         return $this->belongsToMany(Subjects::class, 'class_subjects', 'class', 'subject');
     }
-
 
 }

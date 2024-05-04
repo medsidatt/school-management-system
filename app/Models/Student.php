@@ -9,14 +9,19 @@ class Student extends Model
 {
     use HasFactory;
 
-    public function studentParents()
+    public function parents()
     {
-        return $this->belongsTo(StudentParent::class, 'id');
+        return $this->belongsTo(StudentParent::class, 'parent');
     }
 
     public function classes()
     {
         return $this->belongsTo(Classes::class, 'class');
+    }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
     }
 
     protected $fillable = [

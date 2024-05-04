@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('class')->references('id')->on('classes');
 
 
-            $table->string('coef');
+            $table->integer('coeficient');
 
             $table->timestamps();
         });

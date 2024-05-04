@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\exams\FirstExamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentController;
@@ -47,8 +49,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('students/{id}', [StudentController::class, 'view'])->name('students.view');
     Route::get('students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('students/{id}/edit', [StudentController::class, 'update'])->name('students.edit');
-    Route::delete('students/{id}/delete', [StudentController::class, 'destroy'])->name('students.delete');
-
+    Route::post('delete-student', [StudentController::class, 'destroy']);
 });
 
 
@@ -79,7 +80,9 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('classes', [ClassesController::class, 'index'])->name('classes');
     Route::get('classes/create', [ClassesController::class, 'create'])->name('classes.create');
     Route::get('classes/{id}/edit', [ClassesController::class, 'edit'])->name('classes.edit');
+    Route::get('classes/{id}', [ClassesController::class, 'show'])->name('classes.show');
     Route::put('classes/{id}/edit', [ClassesController::class, 'update'])->name('classes.edit');
+    Route::delete('classes/{id}/delete', [ClassesController::class, 'destroy'])->name('classes.delete');
     Route::post('classes/create', [ClassesController::class, 'store'])->name('classes.create');
 
 });
@@ -87,5 +90,18 @@ Route::middleware('isLoggedIn')->group(function () {
 Route::middleware('isLoggedIn')->group(function () {
 
     Route::get('subject', [SubjectsController::class, 'index'])->name('subjects');
+
+});
+
+
+Route::middleware('isLoggedIn')->group(function () {
+
+    Route::get('exams/quarters/first-quarter', [FirstExamController::class, 'index'])->name('exams.quarters.first');
+    Route::post('exams/quarters/first-quarter', [FirstExamController::class, 'store'])->name('exams.quarters.first');
+    Route::get('exams/quarters/first-quarter/edit', [FirstExamController::class, 'edit'])->name('exams.quarters.first.edit');
+    Route::post('exams/quarters/first-quarter/student-subjects', [FirstExamController::class, 'studentSubjects'])->name('exams.quarters.first.student-subjects');
+
+
+
 
 });
