@@ -46,9 +46,6 @@
                                             <input id="note" type="text" name="note" class="form-control"
                                                    placeholder="La note">
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-4">
                                         <div>
                                             <button id="send-button" class="btn btn-primary" type="submit">Enregistrer
                                             </button>
@@ -69,19 +66,20 @@
                         </div>
 
                         <hr>
-                        <!-- Table with stripped rows -->
-                        <table id="exams" class="table table-striped table-responsive">
-                            <thead class="table-bordered">
-                            <tr>
-                                <th>#</th>
-                                <th>Nom</th>
-                                <th>Matiere</th>
-                                <th>Note</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div style="border: 1px solid black; padding: 3px">
+                            <table id="exams" class="table table-striped">
+                                <thead class="table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Matiere</th>
+                                    <th>Note</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+
 
 
                         <div class="modal fade" id="exam-modal" tabindex="-1"
@@ -143,12 +141,18 @@
                 let form = $('#exam-form')[0];
                 let data = new FormData(form);
                 let noteInput = $('#note');
-                let subjectSelect = $('#subject');
+                let selectedSubject = $('#subject');
+                let selectedStudent = $('#student');
                 let errorFields = {
-                    'student': $('#student'),
+                    'student': selectedStudent,
                     'note': noteInput,
-                    'subject': subjectSelect
+                    'subject': selectedSubject
                 };
+
+
+                data.append('subject', selectedSubject.val());
+
+                data.append('student', selectedStudent.val());
 
                 $.ajax({
                     url: "{{ route('exams.quarters.first') }}",
@@ -172,14 +176,10 @@
                     }
                 });
             });
-
             function handleFieldError(fieldElement, errorMessage) {
                 fieldElement.toggleClass('is-invalid', errorMessage !== null);
                 fieldElement.toggleClass('is-valid', errorMessage === null);
             }
-
-            // End send button
-
 
         });
 
@@ -198,16 +198,19 @@
                     }
                     studentSelect.empty();
                     subjectSelect.empty();
+                    studentSelect.append('<option selected value="">Etudiant ~</option>');
+                    subjectSelect.append('<option selected value="">Classe ~</option>');
                     $.each(response.subjects, function (index, value) {
-                        subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
+                        subjectSelect.append('<option value="' + value.id + '">'+ value.name + '</option>');
                     })
                     $.each(response.students, function (index, value) {
-                        studentSelect.append('<option value="' + value.id + '">' + value.first_name + ' ' + value.last_name + '</option>');
+                        studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
                     })
                     table.DataTable({
                         language: {
                             info: 'Affichage de la page _PAGE_ sur _PAGES_',
                             infoEmpty: 'Aucun enregistrement disponible',
+                            emptyTable: "Aucun enregistrement disponible",
                             infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
                             lengthMenu: 'Afficher les enregistrements _MENU_ par page',
                             zeroRecords: 'Rien trouvé - désolé',
@@ -219,34 +222,28 @@
                         ajax: {
                             url: "{{ route('exams.quarters.first.filtered') }}",
                             data: {class_id: classId},
-                            // dataSrc: 'exams'
                         },
+                        scrollY: 200,
+                        pagingType: 'simple_numbers',
                         columns: [
-                            {data: 'id'},
+                            {data: 'students.id'},
                             {
-                                data: function (row) {
-                                    return {
-                                        display : row.students.first_name + ' ' + row.students.last_name
-                                    }
-                                },
-                                render: function (data) {
-                                    return data.display;
+                                data: 'students.first_name',
+                                render: function(data, type, row, meta) {
+                                    return row.students.first_name + ' ' + row.students.last_name;
                                 }
                             },
                             {data: 'subjects.name'},
-                            {data: 'note'},
+                            {data: 'note', searching: false},
                             {data: 'action', orderable: false}
-                        ],
-                        order: [
-                            [0, 'desc'],
-                            [1, 'desc']
                         ]
                         ,
-                        "createdRow": function (row, data, dataIndex) {
+                        "createdRow": function (row, data, td) {
                             $(row).find('td:eq(0)').attr('data-id', data.id);
                             $(row).find('td:eq(1)').attr('data-student', data.students.id);
                             $(row).find('td:eq(2)').attr('data-subject', data.subjects.id);
                             $(row).find('td:eq(3)').attr('data-note', data.note);
+                            $(row).find('td').css('padding', '1px');
                         }
                     });
                 }
@@ -271,10 +268,10 @@
                 note: closestRow.find('td:eq(3)').data('note')
             };
             studentSelected.val(rowData.nom);
-            // studentSelected.prop("disabled", true);
+            studentSelected.prop("disabled", true);
             subjectSelect.val(rowData.subject);
             subjectSelect.find('option[value="' + rowData.subject.toString() + '"]').prop('selected', true);
-            // subjectSelect.prop("disabled", true);
+            subjectSelect.prop("disabled", true);
             noteInput.val(rowData.note);
             noteId.val(rowData.id).text(rowData.id);
         }
