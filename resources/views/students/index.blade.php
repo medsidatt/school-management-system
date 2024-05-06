@@ -109,42 +109,28 @@
                 processing: true,
                 serverSide: true,
                 ajax: "{{ url('students') }}",
-                columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'id' },
+                    { data: 'rim' },
                     {
-                        data: 'id',
-                        name: 'id'
+                        data: function (row) {
+                            return {
+                                display : row.first_name + ' ' + row.last_name
+                            }
+                        },
+                        render : function (data) {
+                            return data.display;
+                        }
                     },
-                    {
-                        data: 'rim',
-                        name: 'rim'
-                    },
-                    {
-                        data: 'first_name',
-                        name: 'first_name'
-                    },
-                    {
-                        data: 'sex',
-                        name: 'sex'
-                    },
-                    {
-                        data: 'classes.name',
-                        name: 'classes.name'
-                    },
-                    {
-                        data: 'date_of_birth',
-                        name: 'date_of_birth'
-                    },
+                    { data: 'sex' },
+                    { data: 'classes.name' },
+                    { data: 'date_of_birth' },
                     {
                         data: 'action',
                         name: 'action',
                         orderable: false
                     },
-                ],
-                order: [
-                    [0, 'desc']
                 ]
             });
 

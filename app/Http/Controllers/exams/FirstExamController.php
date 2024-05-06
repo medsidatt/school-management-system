@@ -3,33 +3,26 @@
 namespace App\Http\Controllers\exams;
 
 use App\Http\Controllers\Controller;
+use App\Models\Classes;
+use App\Models\ClassSubject;
 use App\Models\Exam;
 use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Input\StringInput;
+use Yajra\DataTables\DataTables;
 
 class FirstExamController extends Controller
 {
     public function index()
     {
-        $students = Student::all();
-        $subjects = Subjects::all();
-        if (request()->ajax()) {
-            return datatables()->of(Exam::where('quarter', 1)->with('students', 'subjects')->get())
-                ->addColumn('action', 'exams.quarters.first.exam-action')
-                ->rawColumns(['action'])
-                ->addIndexColumn()
-                ->make(true);
-        }
+        $classes = Classes::all();
         return view('exams.quarters.first.index', [
-            'students' => $students,
-            'subjects' => $subjects
+            'classes' => $classes
         ]);
-
     }
-
 
 
     public function store(Request $request)
@@ -51,13 +44,16 @@ class FirstExamController extends Controller
             'quarter' => 1
         ];
 
-        $exam = Exam::create($data);
+        if ($request->input('id')) {
+            $note = Exam::find($request->input('id'));
+            $note->update($data);
+            return response()->json(['success' => true, 'exam' => $note]);
+        } else {
+            $exam = Exam::create($data);
+        }
 
-        // Assuming you want to return something meaningful upon successful creation
         return response()->json(['success' => true, 'exam' => $exam]);
     }
-
-
 
 
     public function studentSubjects(Request $request)
@@ -76,7 +72,7 @@ class FirstExamController extends Controller
                     ->where('exams.quarter', $quarter);
             })->get();
 
-            return response()->json(['subjects' => $subjectsNotTaken ]);
+            return response()->json(['subjects' => $subjectsNotTaken]);
         }
 
     }
@@ -85,7 +81,26 @@ class FirstExamController extends Controller
     public function edit()
     {
         if (request()->ajax()) {
-            return response()->json(['data' => request()->id ]);
+            return response()->json(['data' => request()->id]);
         }
     }
+
+    public function filteredExams(Request $request)
+    {
+        $classId = $request->class_id;
+        $subjects = Subjects::whereHas('classes', function ($query) use ($classId) {
+            $query->where('classes.id', $classId);
+        })->get(['id', 'name']);
+
+        $students = Student::where('class', $classId)->get();
+        return datatables()->of(Exam::where('quarter', 1)->with('students', 'subjects')
+            ->get())
+            ->addColumn('action', 'exams.quarters.first.exam-action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->with('subjects', $subjects)
+            ->with('students', $students)
+            ->make(true);
+    }
+
 }

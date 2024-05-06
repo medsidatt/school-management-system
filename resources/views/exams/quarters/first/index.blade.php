@@ -30,27 +30,25 @@
                                     <div class="col-md-6">
                                         <div class="mb-2">
                                             <select id="student" name="student" class="form-select">
-                                                <option value="">Selectionner un etudiant</option>
-                                                @foreach($students as $student)
-                                                    <option value="{{ $student->id }}"><span>{{ $student->id }}</span>
-                                                        - {{ $student->first_name. ' ' . $student->last_name }}</option>
-                                                @endforeach
+                                                <option value="">Etudiant ~</option>
+
                                             </select>
                                         </div>
 
                                         <div class="mb-2">
                                             <select id="subject" name="subject" class="form-select">
-                                                <option value="">Selectionner une matiere</option>
-                                                @foreach($subjects as $subject)
-                                                    <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                                                @endforeach
+                                                <option value="">Matiere ~</option>
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-md-2">
                                         <div class="mb-2">
-                                            <input id="note" type="text" name="note" class="form-control" placeholder="La note">
+                                            <input id="note" type="text" name="note" class="form-control"
+                                                   placeholder="La note">
                                         </div>
+                                    </div>
+
+                                    <div class="col-md-4">
                                         <div>
                                             <button id="send-button" class="btn btn-primary" type="submit">Enregistrer
                                             </button>
@@ -59,6 +57,15 @@
 
                                 </div>
                             </form>
+                        </div>
+
+                        <div>
+                            <select id="class" onchange="classFunc(event)" name="class_id" class="form-select">
+                                <option value="">Classe ~</option>
+                                @foreach($classes as $class)
+                                    <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
 
                         <hr>
@@ -129,132 +136,18 @@
                 }
             });
 
-            {{--$('#student').change(function (e) {--}}
-            {{--    e.preventDefault();--}}
-            {{--    let data = {student_id: $('#student').find(':selected').val()}--}}
-            {{--    let subjectSelect = $('#subject');--}}
-
-            {{--    subjectSelect.empty();--}}
-
-
-            {{--    $.ajax({--}}
-            {{--        url: "{{ route('exams.quarters.first.student-subjects') }}",--}}
-            {{--        type: "POST",--}}
-            {{--        data: data,--}}
-            {{--        dataType: "JSON",--}}
-            {{--        success: function(response) {--}}
-            {{--            if (response.subjects) {--}}
-            {{--                $.each(response.subjects, function( index, subject ) {--}}
-            {{--                    subjectSelect.append($('<option>', {--}}
-            {{--                        value: subject.id,--}}
-            {{--                        text: subject.name--}}
-            {{--                    }));--}}
-
-            {{--                })--}}
-            {{--                // console.log(response.subjects);--}}
-            {{--            }--}}
-            {{--        }--}}
-            {{--    });--}}
-            {{--});--}}
-
-            $('#exams').DataTable({
-                language: {
-                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
-                    infoEmpty: 'Aucun enregistrement disponible',
-                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
-                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
-                    zeroRecords: 'Rien trouvé - désolé',
-                    searchPlaceholder: 'Recherche',
-                    search: 'Rechercher',
-                },
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('exams.quarters.first') }}",
-                columns: [
-                    {
-                        data: function (row) {
-                            return {
-                                display: row.id,
-                                'data-id': row.id
-                            }
-                        },
-                        name: 'id',
-                        render: function (data) {
-                            return data.display;
-                        }
-                    },
-                    {
-                        data: function(row) {
-                            let fullName = row.students.first_name + ' ' + row.students.last_name;
-                            return {
-                                display: fullName,
-                                'data-student': row.students.id
-                            };
-                        },
-                        name: 'students.full_name',
-                        render: function(data) {
-                            return data.display;
-                        }
-                    },
-                    {
-                        data: function (row) {
-                            return {
-                                display: row.subjects.name,
-                                'data-subjec': row.subjects.id
-                            }
-
-                        },
-                        name: 'subjects.name',
-                        render: function (data) {
-                            return data.display
-                        }
-                    },
-                    {
-                        data: function (row) {
-                            return {
-                                display: row.note,
-                                'data-note': row.note
-                            }
-                        },
-                        name: 'note',
-                        render: function(data) {
-                            return data.display;
-                        }
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        orderable: true
-                    },
-                ],
-                order: [
-                    [0, 'desc']
-                ],
-                "createdRow": function(row, data, dataIndex) {
-                    var cell = $(row).find('td:eq(0)');
-                    var cell1 = $(row).find('td:eq(1)');
-                    var cell2 = $(row).find('td:eq(2)');
-                    var cell3 = $(row).find('td:eq(3)');
-                    cell.attr('data-id', data.id);
-                    cell1.attr('data-student', data.students.id);
-                    cell2.attr('data-subject', data.subjects.id);
-                    cell3.attr('data-note', data.note);
-                }
-            });
-
-
-
-
 
             $('#send-button').click(function (e) {
                 e.preventDefault();
 
                 let form = $('#exam-form')[0];
                 let data = new FormData(form);
+                let noteInput = $('#note');
+                let subjectSelect = $('#subject');
                 let errorFields = {
                     'student': $('#student'),
-                    'note': $('#note'),
-                    'subject': $('#subject')
+                    'note': noteInput,
+                    'subject': subjectSelect
                 };
 
                 $.ajax({
@@ -265,15 +158,16 @@
                     processData: false,
                     contentType: false,
 
-                    success: function(response) {
+                    success: function (response) {
                         if (response.errors) {
                             $.each(response.errors, function (field, errorMessage) {
-                                console.log(errorMessage);
                                 handleFieldError(errorFields[field], errorMessage);
                             });
                         } else {
-                            console.log("Exam created:", response.exam);
-                            location.reload();
+                            // $('#exams').DataTable().draw();
+                            $('#exams').DataTable().ajax.reload();
+                            noteInput.val('');
+                            $('#subject option:selected').next().attr('selected', 'selected');
                         }
                     }
                 });
@@ -288,6 +182,80 @@
 
 
         });
+
+        function classFunc(event) {
+            let classId = event.target.value;
+            let subjectSelect = $('#subject');
+            let studentSelect = $('#student');
+            let table = $('#exams');
+            if ($.fn.DataTable.isDataTable('#exams')) {
+                table.DataTable().destroy();
+            }
+
+
+            $.ajax({
+                url: "{{ route('exams.quarters.first.filtered', '') }}",
+                data: {class_id: classId},
+                method: 'GET',
+                success: function (response) {
+                    $.each(response.subjects, function (index, value) {
+                        subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
+                    })
+                    $.each(response.students, function (index, value) {
+                        studentSelect.append('<option value="' + value.id + '">' + value.first_name + ' ' + value.last_name + '</option>');
+                    })
+                    table.DataTable({
+                        language: {
+                            info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                            infoEmpty: 'Aucun enregistrement disponible',
+                            infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                            lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                            zeroRecords: 'Rien trouvé - désolé',
+                            searchPlaceholder: 'Recherche',
+                            search: 'Rechercher',
+                        },
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url: "{{ route('exams.quarters.first.filtered') }}",
+                            data: {class_id: classId},
+                            // dataSrc: 'exams'
+                        },
+                        columns: [
+                            {data: 'id'},
+                            {
+                                data: function (row) {
+                                    return {
+                                        display : row.students.first_name + ' ' + row.students.last_name
+                                    }
+                                },
+                                render: function (data) {
+                                    return data.display;
+                                }
+                            },
+                            {data: 'subjects.name'},
+                            {data: 'note'},
+                            {data: 'action', orderable: false}
+                        ],
+                        order: [
+                            [0, 'desc'],
+                            [1, 'desc']
+                        ]
+                        ,
+                        "createdRow": function (row, data, dataIndex) {
+                            $(row).find('td:eq(0)').attr('data-id', data.id);
+                            $(row).find('td:eq(1)').attr('data-student', data.students.id);
+                            $(row).find('td:eq(2)').attr('data-subject', data.subjects.id);
+                            $(row).find('td:eq(3)').attr('data-note', data.note);
+                        }
+                    });
+                }
+
+            });
+
+
+        }
+
 
         function editFunc(event) {
             let clickedButton = event.target;
