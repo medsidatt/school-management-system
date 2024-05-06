@@ -188,16 +188,16 @@
             let subjectSelect = $('#subject');
             let studentSelect = $('#student');
             let table = $('#exams');
-            if ($.fn.DataTable.isDataTable('#exams')) {
-                table.DataTable().destroy();
-            }
-
-
             $.ajax({
                 url: "{{ route('exams.quarters.first.filtered', '') }}",
                 data: {class_id: classId},
                 method: 'GET',
                 success: function (response) {
+                    if ($.fn.DataTable.isDataTable('#exams')) {
+                        table.DataTable().destroy();
+                    }
+                    studentSelect.empty();
+                    subjectSelect.empty();
                     $.each(response.subjects, function (index, value) {
                         subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
                     })

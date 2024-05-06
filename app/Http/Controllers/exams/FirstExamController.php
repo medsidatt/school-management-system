@@ -18,6 +18,14 @@ class FirstExamController extends Controller
 {
     public function index()
     {
+//        dd(Exam::with('students', 'subjects')
+//            ->join('students', 'students.id', '=', 'exams.student_id')
+//            ->join('classes', 'classes.id', '=', 'students.class')
+//            ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
+//            ->where('quarter', 1)
+//            ->where('classes.id', 1)
+//            ->get()->first());
+
         $classes = Classes::all();
         return view('exams.quarters.first.index', [
             'classes' => $classes
@@ -93,7 +101,12 @@ class FirstExamController extends Controller
         })->get(['id', 'name']);
 
         $students = Student::where('class', $classId)->get();
-        return datatables()->of(Exam::where('quarter', 1)->with('students', 'subjects')
+        return datatables()->of(Exam::with('students', 'subjects')
+            ->join('students', 'students.id', '=', 'exams.student_id')
+            ->join('classes', 'classes.id', '=', 'students.class')
+            ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
+            ->where('quarter', 1)
+            ->where('classes.id', $classId)
             ->get())
             ->addColumn('action', 'exams.quarters.first.exam-action')
             ->rawColumns(['action'])
