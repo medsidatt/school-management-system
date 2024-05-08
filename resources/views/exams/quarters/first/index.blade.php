@@ -296,32 +296,38 @@
         }
 
         function deleteFunc(id) {
-            let clickedButton = event.target;
             $.confirm({
-                title: 'Confirm!',
+                title: 'Confirmer!',
                 content: 'Voulez vous suprimer cette note!',
                 confirmButton: 'Okay',
                 cancelButton: 'Cancel',
                 confirmButtonClass: 'btn-danger',
                 cancelButtonClass: 'btn-default',
                 buttons: {
-                    confirm: function () {
+                    confirm: {
+                        text: 'Suprimer',
+                        btnClass: 'btn-success',
+                        action: function () {
                         $.ajax({
                             url: "{{ route('exams.quarters.first.delete') }}",
                             method: 'POST',
                             data: {id: id},
 
                             success: function (response) {
-                                $('#exams').DataTable().ajax.reload();
-                                $.html('<div class="alert align-center alert-success alert-dismissible fade" role="alert">' +
-                                    '<strong>Alert</strong> <span>vous avez suprimee une note</span>'+
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
-                            '</div>');
-                            }
+                                    $('#exams').DataTable().ajax.reload();
+                                    $.html('<div class="alert align-center alert-success alert-dismissible fade" role="alert">' +
+                                        '<strong>Alert</strong> <span>vous avez suprimee une note</span>' +
+                                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                        '</div>');
+                                }
+
                         });
+                        }
                     },
-                    cancel: function () {
-                        $.alert('Annulé!');
+                    cancel:  {
+                        text: 'Anulee',
+                        btnClass: 'btn-danger',
+                        action: function () {$.alert('Annulé!');}
                     }
                     // ,
                     // somethingElse: {
