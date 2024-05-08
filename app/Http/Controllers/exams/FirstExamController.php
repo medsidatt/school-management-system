@@ -18,13 +18,6 @@ class FirstExamController extends Controller
 {
     public function index()
     {
-//        dd(Exam::with('students', 'subjects')
-//            ->join('students', 'students.id', '=', 'exams.student_id')
-//            ->join('classes', 'classes.id', '=', 'students.class')
-//            ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
-//            ->where('quarter', 1)
-//            ->where('classes.id', 1)
-//            ->get()->first());
 
         $classes = Classes::all();
         return view('exams.quarters.first.index', [
@@ -52,15 +45,21 @@ class FirstExamController extends Controller
             'quarter' => 1
         ];
 
+        $exams = Exam::where('student_id', $data['student_id'])
+            ->where('subject_id', $data['subject_id'])
+            ->get();
+
         if ($request->input('id')) {
             $note = Exam::find($request->input('id'));
             $note->update($data);
-            return response()->json(['success' => true, 'exam' => $note]);
-        } else {
-            $exam = Exam::create($data);
-        }
-
-        return response()->json(['success' => true, 'exam' => $exam]);
+            return response()->json(['updated' => 'update']);
+        } else
+            if ($exams->count() > 0) {
+                return response()->json(['exam' => $exams]);
+            } else {
+                $exam = Exam::create($data);
+                return response()->json(['success' => $exam]);
+            }
     }
 
 
@@ -101,10 +100,14 @@ class FirstExamController extends Controller
         })->get(['id', 'name']);
 
         $students = Student::where('class', $classId)->get();
-        return datatables()->of(Exam::with('students', 'subjects')
-            ->join('students', 'students.id', '=', 'exams.student_id')
+        return datatables()->of(Exam::join('students', 'students.id', '=', 'exams.student_id')
             ->join('classes', 'classes.id', '=', 'students.class')
             ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
+            ->select(
+                'exams.id as id', 'exams.note as note',
+                'students.id as stu_id', 'students.first_name as stu_fn', 'students.last_name as stu_ln',
+                'subjects.id as sub_id', 'subjects.name as sub_name'
+            )
             ->where('quarter', 1)
             ->where('classes.id', $classId)
             ->get())
@@ -115,5 +118,16 @@ class FirstExamController extends Controller
             ->with('students', $students)
             ->make(true);
     }
+
+    public function destroy(Request $request)
+    {
+        if (request()->ajax()) {
+            $note = Exam::find(request()->id);
+            $note->delete();
+            return response()->json(['success' => true]);
+        }
+    }
+
+
 
 }

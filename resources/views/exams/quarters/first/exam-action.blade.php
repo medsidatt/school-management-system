@@ -5,7 +5,9 @@
         </a>
     </button>
 
-    <button type="button" class="btn btn-outline-primary" style="padding: 1px">
+    <button type="button" class="btn btn-outline-primary"
+            onclick="deleteFunc({{ $id }}, event)"
+            style="padding: 1px">
         <a href="javascript:void(0)" class="delete btn btn-danger">
             <i class="bi bi-trash-fill"></i>
         </a>

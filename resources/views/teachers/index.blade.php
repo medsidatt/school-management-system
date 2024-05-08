@@ -37,6 +37,7 @@
                                 </div>
                             </div>
                         </div>
+                        {{ request()->path() }}
 
                         <!-- Table with stripped rows -->
                         <table class="table table-striped table-responsive">

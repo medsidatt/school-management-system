@@ -2,7 +2,7 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <li class="nav-item">
+        <li class="nav-item {{ (request()->is('/')) ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('home') }}">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
@@ -27,7 +27,7 @@
             </a>
             <ul id="result-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li class="nav-item">
-                    <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+                    <a class="nav-link collapsed" data-bs-toggle="collapse">
                         <i class="bi bi-square-fill"></i><span>Devoires</span><i class="bi bi-chevron-down ms-auto me-3"></i>
                     </a>
                     <ul id="icons-nav" class="nav-content collapse ms-lg-3" data-bs-parent="#result-nav">
@@ -54,7 +54,7 @@
                         <i class="bi bi-square-fill"></i><span>Compositions</span><i class="bi bi-chevron-down ms-auto me-3"></i>
                     </a>
                     <ul id="exams-nav" class="nav-content collapse ms-lg-3" data-bs-parent="#result-nav">
-                        <li>
+                        <li class="{{request()->is('exams/quarters/first-quarter') ? 'active' : ''}}">
                             <a href="{{ route('exams.quarters.first') }}">
                                 <i class="bi bi-circle"></i><span>Trimestre 1</span>
                             </a>
