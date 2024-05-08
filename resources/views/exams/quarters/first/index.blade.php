@@ -13,8 +13,9 @@
         </nav>
     </div><!-- End Page Title -->
 
-    <p id="cf-response-message"></p>
+    {{--    <p id="cf-response-message"></p>--}}
 
+    <div id="alert"></div>
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
@@ -45,7 +46,8 @@
                                                    placeholder="La note">
                                         </div>
                                         <div>
-                                            <button id="send-button" class="btn btn-primary w-100" type="submit">Enregistrer
+                                            <button id="send-button" class="btn btn-primary w-100" type="submit">
+                                                Enregistrer
                                             </button>
                                         </div>
                                     </div>
@@ -134,7 +136,6 @@
 
             $('#send-button').click(function (e) {
                 e.preventDefault();
-
                 let form = $('#exam-form')[0];
                 let data = new FormData(form);
                 let noteInput = $('#note');
@@ -170,9 +171,9 @@
                             $('#subject').prop('disabled', false);
                             $('#student').prop('disabled', false);
                             noteInput.val('');
-                            $.html('<div class="alert align-center alert-success alert-dismissible fade" role="alert">' +
-                                '<strong>Modifiee</strong> <span>La note est modifiee avec susses</span>'+
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
+                            $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                                '<strong>Modifiee</strong> <span>La note est modifiee avec susses</span>' +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                 '</div>');
                         } else {
                             console.log(response.success);
@@ -180,9 +181,9 @@
                             $('#exams').DataTable().ajax.reload();
                             noteInput.val('');
                             $('#subject option:selected').next().attr('selected', 'selected');
-                        $.html('<div class="alert align-center alert-success alert-dismissible fade" role="alert">' +
-                                '<strong>Ajouter</strong> <span>La note est ajoutee avec susses</span>'+
-                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+
+                            $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                                '<strong>Ajouter</strong> <span>La note est ajoutee avec susses</span>' +
+                                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                 '</div>');
                         }
                     }
@@ -218,7 +219,7 @@
                         studentSelect.empty();
                         subjectSelect.empty();
                         studentSelect.append('<option selected value="">Etudiant ~</option>');
-                        subjectSelect.append('<option selected value="">Classe ~</option>');
+                        subjectSelect.append('<option selected value="">Matiere ~</option>');
                         $.each(response.subjects, function (index, value) {
                             subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
                         })
@@ -247,7 +248,7 @@
                             columns: [
                                 {data: 'stu_id'},
                                 {
-                                    data: 'students.first_name',
+                                    data: 'stu.fn',
                                     render: function (data, type, row, meta) {
                                         return row.stu_fn + ' ' + row.stu_ln;
                                     }
@@ -308,36 +309,29 @@
                         text: 'Suprimer',
                         btnClass: 'btn-success',
                         action: function () {
-                        $.ajax({
-                            url: "{{ route('exams.quarters.first.delete') }}",
-                            method: 'POST',
-                            data: {id: id},
+                            $.ajax({
+                                url: "{{ route('exams.quarters.first.delete') }}",
+                                method: 'POST',
+                                data: {id: id},
 
-                            success: function (response) {
+                                success: function () {
                                     $('#exams').DataTable().ajax.reload();
-                                    $.html('<div class="alert align-center alert-success alert-dismissible fade" role="alert">' +
+                                    $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
                                         '<strong>Alert</strong> <span>vous avez suprimee une note</span>' +
                                         '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                         '</div>');
                                 }
 
-                        });
+                            });
                         }
                     },
-                    cancel:  {
+                    cancel: {
                         text: 'Anulee',
                         btnClass: 'btn-danger',
-                        action: function () {$.alert('Annulé!');}
+                        action: function () {
+                            $.alert('Annulé!');
+                        }
                     }
-                    // ,
-                    // somethingElse: {
-                    //     text: 'Something else',
-                    //     btnClass: 'btn-blue',
-                    //     keys: ['enter', 'shift'],
-                    //     action: function(){
-                    //         $.alert('Something else?');
-                    //     }
-                    // }
                 }
             });
         }
