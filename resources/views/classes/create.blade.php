@@ -27,6 +27,7 @@
 
     <div class="card">
         <form id="class-form">
+            <input type="hidden" name="id">
             <div class="card-header">
                 <h4>Les informaions de la classe</h4>
             </div>
@@ -35,10 +36,29 @@
                 <div class="row mb-2 w-50">
                     <div class="form-group">
                         <label class="" for="class-name">Le nom du class</label>
-                        <input type="text" class="form-control" id="class-name">
+                        <input name="name" type="text" class="form-control" id="name">
+                        <span id="name-error" class="invalid-feedback"></span>
                     </div>
                 </div>
-                <div id="form-body"></div>
+                <div id="form-body">
+                    <div class="container">
+                        @foreach($subjects as $index => $subject)
+                            <div class="row border-radius border-1 border-secondary mb-2">
+                                <div class="col-sm-6">
+                                    <div class="form-check">
+                                        <input name="subject[]" class="form-check-input" type="checkbox" value="{{ $subject['id'] }}" id="subject{{ $index }}">
+                                        <label class="form-check-label" for="subject{{ $index }}">
+                                            {{ $subject['name'] }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" name="coeficient[]" class="form-control" id="coef{{ $index }}">
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
             <div class="card-footer">
                 <button id="send-button" type="button" class="btn btn-primary">Enregistrer</button>
@@ -67,51 +87,84 @@
             formBody.append(`<div class="row border-radius border-1 border-secondary mb-2">
             <div class="col-sm-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="${value.id}" id="subject${index}">
+                    <input name="subject[]" class="form-check-input" type="checkbox" value="${value.id}" id="subject${index}">
                     <label class="form-check-label" for="subject${index}">
                         ${value.name}
                     </label>
                 </div>
             </div>
             <div class="col-sm-5">
-                <input type="text" name="coef${index}" class="form-control-sm" id="coef${index}">
+                <input type="text" name="coeficient[]" class="form-control-sm" id="coef${index}">
             </div>
         </div>`);
         } {{-- Row generator function --}}
 
 
         function validateFormData() {
+            let nameField = $('#name');
+            let errorMessage = $('#name-error');
             let isValid = true;
             const subjectCount = $('[id^="subject"]').length;
 
             for (let i = 0; i < subjectCount; i++) {
-                const checkbox = document.getElementById(`subject${i}`);
-                const coefficientInput = document.getElementById(`coef${i}`);
-                if (checkbox.checked) {
-                    const coefficient = parseFloat(coefficientInput.value);
+                const checkbox = $(`#subject${i}`);
+                const coefficientInput = $(`#coef${i}`);
+
+                if (checkbox.prop('checked')) {
+                    const coefficient = parseInt(coefficientInput.val());
                     if (isNaN(coefficient) || coefficient < 1 || coefficient > 8) {
-                        coefficientInput.style.border = '1px solid red';
+                        coefficientInput.addClass('is-invalid');
                         isValid = false;
                     } else {
-                        coefficientInput.style.border = '';
+                        coefficientInput.removeClass('is-invalid');
                     }
                 }
             }
+            if (nameField.val() === ''){
+                nameField.addClass('is-invalid');
+                errorMessage.text('Le nom du class est obligatoire');
+            }else {
+                nameField.removeClass('is-invalid');
+                errorMessage.text('');
+            }
+
             return isValid;
         }
 
-        classForm.ready(function () {
+        {{--classForm.ready(function () {--}}
 
-            $.ajax({
-                url: "{{ route('classes.create') }}",
-                type: 'GET',
-                success: function (response) {
-                    $.each(response.subjects, function (index, value) {
-                        createRow(index, value);
-                    });
-                }
-            });
-        }); {{-- Subjects --}}
+        {{--    $.ajax({--}}
+        {{--        url: "{{ route('classes.create') }}",--}}
+        {{--        type: 'GET',--}}
+        {{--        success: function (response) {--}}
+        {{--            $.each(response.subjects, function (index, value) {--}}
+        {{--                createRow(index, value);--}}
+        {{--            });--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--});--}}
+
+        let nameField = $('#name');
+        let nameError = $('#name-error');
+
+        function clearErrors() {
+            nameField.removeClass('is-invalid');
+            nameError.text('');
+        }
+
+        function clearInputs() {
+            $('#id').val('');
+            nameField.val('');
+            $('#subjects').val('');
+        }
+
+        function handleErrors(errorMessage) {
+            nameField.addClass('is-invalid');
+            nameError.text(errorMessage);
+        }
+
+        {{-- Subjects --}}
+
 
         $('#send-button').on('click', function () {
             let data = new FormData(classForm[0]);
@@ -123,13 +176,23 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log(response);
+                        if(response.errors) {
+                            clearErrors();
+                            $.each(response.errors, function (index, errorMessage) {
+                                handleErrors(errorMessage);
+                                console.log(errorMessage);
+                            });
+                        }else if (response.success && response.redirect) {
+                            clearInputs()
+                            window.location.href = response.redirect;
+                        }
                     }
                 });
             } else {
                 console.log('not validated');
             }
         });
+
 
     </script>
 @endsection

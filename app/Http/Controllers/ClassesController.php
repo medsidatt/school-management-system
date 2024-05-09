@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ClassPostRequest;
 use App\Models\Classes;
 use App\Models\Subjects;
-use Dotenv\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use MongoDB\Driver\Session;
 
 class ClassesController extends Controller
 {
@@ -26,23 +28,35 @@ class ClassesController extends Controller
     public function create()
     {
         $subjects = Subjects::all()->sortBy('name');
-        if (request()->ajax()) {
-            return response()->json(['subjects' => $subjects ]);
-        }
-        return view('classes.create');
+//        if (request()->ajax()) {
+//            return response()->json(['subjects' => $subjects]);
+//        }
+        return view('classes.create', [
+            'subjects' => $subjects,
+        ]);
     }
 
     public function store(Request $request)
     {
+        $messages = [
+            'required' => 'Le :attribute est obligatoire!',
+            'unique' => 'Le :attribute est deja utilisee'
+        ];
+
+        $attributes = ['name' => 'nom du matiere'];
         $validator = Validator::make($request->all(), [
+            'name' => [
+                'required',
+                Rule::unique('classes', 'name')->ignore($request->input('id'))
+            ]
+        ], $messages, $attributes);
 
-        ]);
 
-
-        if (request()->ajax()) {
-            return response()->json(['success' => '$validated']);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
         }
-
+        $request->session()->put('success', 'Vous avez creer une nouvelle classe');
+        return response()->json(['success' => true, 'redirect' => route('classes')]);
 
     }
 

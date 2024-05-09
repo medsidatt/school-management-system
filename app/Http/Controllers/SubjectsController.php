@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Subjects;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
