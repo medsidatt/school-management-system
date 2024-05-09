@@ -25,28 +25,34 @@ class ClassesController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create()
     {
         $subjects = Subjects::all()->sortBy('name');
-        return view('classes.create', [
-            'subjects'=> $subjects
-        ]);
+        if (request()->ajax()) {
+            return response()->json(['subjects' => $subjects ]);
+        }
+        return view('classes.create');
     }
 
-    public function store(ClassPostRequest $request): RedirectResponse
+    public function store(ClassPostRequest $request)
     {
         $validated = $request->validated();
 
-        try {
-            DB::beginTransaction();
-            $class = Classes::create($validated);
-            $class->subjects()->attach($request->subject);
-            DB::commit();
-            return redirect()->back()->with('success', 'Ajouter avec succès');
+//        try {
+//            DB::beginTransaction();
+//            $class = Classes::create($validated);
+//            $class->subjects()->attach($request->subject);
+//            DB::commit();
+//            return redirect()->back()->with('success', 'Ajouter avec succès');
+//
+//        } catch (\Exception) {
+//            return redirect()->back()->with('fail', 'Erreur d\'inscrire cet étudiant');
+//
+//        }
 
-        } catch (\Exception) {
-            return redirect()->back()->with('fail', 'Erreur d\'inscrire cet étudiant');
 
+        if (request()->ajax()) {
+            return response()->json(['success' => 'hello']);
         }
 
 

@@ -25,10 +25,13 @@
             <a class="nav-link collapsed" data-bs-target="#result-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Resultats</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="result-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <ul id="result-nav" class="nav-content collapse
+            {{ str_contains(request()->url(), 'exams/quarters') || str_contains(request()->url(), 'test/quarters') ? 'show' : ''}}
+            " data-bs-parent="#sidebar-nav">
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-toggle="collapse">
-                        <i class="bi bi-square-fill"></i><span>Devoires</span><i class="bi bi-chevron-down ms-auto me-3"></i>
+                        <i class="bi bi-square-fill"></i><span>Devoires</span><i
+                            class="bi bi-chevron-down ms-auto me-3"></i>
                     </a>
                     <ul id="icons-nav" class="nav-content collapse ms-lg-3" data-bs-parent="#result-nav">
                         <li>
@@ -51,11 +54,16 @@
 
                 <li class="nav-item">
                     <a class="nav-link collapsed" data-bs-target="#exams-nav" data-bs-toggle="collapse" href="#">
-                        <i class="bi bi-square-fill"></i><span>Compositions</span><i class="bi bi-chevron-down ms-auto me-3"></i>
+                        <i class="bi bi-square-fill"></i><span>Compositions</span><i
+                            class="bi bi-chevron-down ms-auto me-3"></i>
                     </a>
-                    <ul id="exams-nav" class="nav-content collapse ms-lg-3" data-bs-parent="#result-nav">
-                        <li class="{{request()->is('exams/quarters/first-quarter') ? 'active' : ''}}">
-                            <a href="{{ route('exams.quarters.first') }}">
+                    <ul id="exams-nav" class="nav-content collapse
+                        {{ str_contains(request()->url(), 'exams/quarters') ? 'show' : ''}}
+                    ms-lg-3"
+                        data-bs-parent="#result-nav">
+                        <li>
+                            <a href="{{ route('exams.quarters.first') }}"
+                               class="{{ str_contains(request()->url(), 'exams/quarters/first-quarter') ? 'active' : ''}}">
                                 <i class="bi bi-circle"></i><span>Trimestre 1</span>
                             </a>
                         </li>

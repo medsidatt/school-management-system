@@ -24,56 +24,112 @@
     </div><!-- End Page Title -->
 
 
-    @if(isset($class))
-        <form action="{{ route('classes.edit', $class->id) }}" method="post">
-            @method('put')
-            <input type="hidden" name="id" value="{{ $class->id }}">
-            @else
-                <form action="{{ route('classes.create') }}" method="post">
-                    @endif
-                    @csrf
-                    <div class="row">
-                        <h4>Les informaions de la classe</h4>
+
+    <div class="card">
+        <form id="class-form">
+            <div class="card-header">
+                <h4>Les informaions de la classe</h4>
+            </div>
+
+            <div class="card-body">
+                <div class="row mb-2 w-50">
+                    <div class="form-group">
+                        <label class="" for="class-name">Le nom du class</label>
+                        <input type="text" class="form-control" id="class-name">
                     </div>
-                    <div class="row g-3 align-items-start">
-                        <div class="col-md-3 justify-start">
-                            <label for="name" class="col-form-label">Labele</label>
-                            <input type="text" id="name" name="name"
-                                   class="form-control @error('name') is-invalid @enderror"
-                                   value="{{ old('name', $class->name ?? '')}}">
-                            @error('name')
-                            <span class="invalid-feedback">{{ $message }}!</span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-7 m-lg-2">
-                            <fieldset>
-                                <legend class="col-form-label col-sm-2 pt-0">Les Matieres</legend>
-                                <div class="row mb-3">
-                                    <div class="col-sm-10 offset-sm-2">
-                                        @foreach($subjects as $subject)
-                                            <div class="form-check">
-                                                <input class="form-check-input" name="subject[]" type="checkbox"
-                                                       {{ (isset($class_subjects) && in_array($subject->id, $class_subjects)) ? 'checked' : '' }} id="gridCheck_{{ $subject->code }}"
-                                                       value="{{ $subject->id }}">
-                                                <label class="form-check-label" for="gridCheck_{{ $subject->code }}">
-                                                    {{ $subject->name }}
-                                                </label>
-                                            </div>
-                                        @endforeach
-
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
+                </div>
+                <div id="form-body"></div>
+            </div>
+            <div class="card-footer">
+                <button id="send-button" type="button" class="btn btn-primary">Enregistrer</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+        </form>
+    </div>
 
 
 
-                    </div>
 
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        <button type="reset" class="btn btn-secondary">Reset</button>
-                    </div>
-                </form>
-        @endsection
+
+    <script>
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        });
+
+        let classForm = $('#class-form');
+        let formBody = $('#form-body');
+
+        function createRow(index, value) {
+            formBody.append(`<div class="row border-radius border-1 border-secondary mb-2">
+            <div class="col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="${value.id}" id="subject${index}">
+                    <label class="form-check-label" for="subject${index}">
+                        ${value.name}
+                    </label>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <input type="text" name="coef${index}" class="form-control-sm" id="coef${index}">
+            </div>
+        </div>`);
+        } {{-- Row generator function --}}
+
+
+        function validateFormData() {
+            let isValid = true;
+            const subjectCount = $('[id^="subject"]').length;
+
+            for (let i = 0; i < subjectCount; i++) {
+                const checkbox = document.getElementById(`subject${i}`);
+                const coefficientInput = document.getElementById(`coef${i}`);
+                if (checkbox.checked) {
+                    const coefficient = parseFloat(coefficientInput.value);
+                    if (isNaN(coefficient) || coefficient < 1 || coefficient > 8) {
+                        coefficientInput.style.border = '1px solid red';
+                        isValid = false;
+                    } else {
+                        coefficientInput.style.border = '';
+                    }
+                }
+            }
+            return isValid;
+        }
+
+        classForm.ready(function () {
+
+            $.ajax({
+                url: "{{ route('classes.create') }}",
+                type: 'GET',
+                success: function (response) {
+                    $.each(response.subjects, function (index, value) {
+                        createRow(index, value);
+                    });
+                }
+            });
+        }); {{-- Subjects --}}
+
+        $('#send-button').on('click', function () {
+            let data = new FormData(classForm[0]);
+            if (validateFormData()) {
+                $.ajax({
+                    url: "{{ route('classes.create') }}",
+                    data: data,
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            } else {
+                console.log('not validated');
+            }
+        });
+
+    </script>
+@endsection
