@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassPostRequest;
-use App\Http\Requests\StorePostRequest;
 use App\Models\Classes;
-use App\Models\ClassSubject;
 use App\Models\Subjects;
-use http\Env\Response;
+use Dotenv\Validator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,25 +32,15 @@ class ClassesController extends Controller
         return view('classes.create');
     }
 
-    public function store(ClassPostRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
+        $validator = Validator::make($request->all(), [
 
-//        try {
-//            DB::beginTransaction();
-//            $class = Classes::create($validated);
-//            $class->subjects()->attach($request->subject);
-//            DB::commit();
-//            return redirect()->back()->with('success', 'Ajouter avec succès');
-//
-//        } catch (\Exception) {
-//            return redirect()->back()->with('fail', 'Erreur d\'inscrire cet étudiant');
-//
-//        }
+        ]);
 
 
         if (request()->ajax()) {
-            return response()->json(['success' => 'hello']);
+            return response()->json(['success' => '$validated']);
         }
 
 

@@ -26,7 +26,8 @@ class SubjectsController extends Controller
     public function store(Request $request)
     {
         $messages = [
-            'required' => 'Le :attribute est obligatoir'
+            'required' => 'Le :attribute est obligatoir',
+            'unique' =>  'Le :attribute est deja utilisee',
         ];
 
         $attributes = [

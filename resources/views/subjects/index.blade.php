@@ -46,13 +46,13 @@
                                                         <input class="form-control" name="name" id="name"
                                                                aria-describedby="emailHelp"
                                                                placeholder="Le nom du matiere">
-                                                        <small id="name-error" class="invalid-feedback"></small>
+                                                        <small id="name-error" class="text-danger"></small>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="code">Le code du matiere</label>
                                                         <input name="code" class="form-control" id="code"
                                                                placeholder="Le code du matiere">
-                                                        <small id="code-error" class="invalid-feedback"></small>
+                                                        <small id="code-error" class="text-danger"></small>
                                                     </div>
                                                 </form>
                                             </div>
@@ -109,6 +109,8 @@
         function emptyFields() {
             $('#name').val('');
             $('#code').val('');
+            $('#name-error').text('');
+            $('#code-error').text('');
             $('#id').val('');
         }
 
@@ -169,22 +171,13 @@
             });
 
             $("#hide-modal").click(function () {
+                emptyFields();
                 $("#myModal").modal('hide');
             });
 
 
             $("#send-button").click(function () {
                 let data = new FormData($('#modal-form')[0]);
-                let errorFields = {
-                    name: $('#name'),
-                    code: $('#code')
-                };
-
-                let errorFeedBacks = {
-                    name: $('#name-error'),
-                    code: $('#code-error')
-                };
-
                 $.ajax({
                     url: "{{ route('subjects') }}",
                     type: 'POST',
@@ -192,15 +185,10 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        // console.log(response);
                         if (response.errors) {
-
+                            clearErrorMessages();
                             $.each(response.errors, function (field, errorMessage) {
-                                console.log(errorFields[field]);
-                                console.log(errorMessage);
-                                console.log(errorFeedBacks[field]);
-                                handleFieldError(errorFields[field], errorMessage, errorFeedBacks[field]);
-
+                                handleErrorMessage(field, errorMessage);
                             });
                         } else if (response.update) {
                             $("#myModal").modal('hide');
@@ -224,13 +212,48 @@
             });
         });
 
-        function handleFieldError(errorField, errorMessage, errorFeedBacks) {
-            errorField.toggleClass('is-invalid', errorMessage !== null);
-            errorFeedBacks.text(errorMessage, errorMessage !== null);
-            errorField.toggleClass('is-valid', errorMessage === null);
-            errorFeedBacks.text('', errorMessage === null);
+        let errorFeedBacks = {
+            name: $('#name-error'),
+            code: $('#code-error')
+        };
+        let errorFields = {
+            name: $('#name'),
+            code: $('#code')
+        };
 
+        function clearErrorMessages() {
+            updateErrorMessage(errorFeedBacks.name, '');
+            updateErrorMessage(errorFeedBacks.code, '');
+            removeInvalidClasses();
         }
+
+        function removeInvalidClasses() {
+            errorFields.name.removeClass('is-invalid')
+            errorFields.code.removeClass('is-invalid')
+        }
+
+
+        function handleErrorMessage(field, errorMessage) {
+            switch (field) {
+                case 'name':
+                    updateErrorMessage(errorFeedBacks.name, errorMessage);
+                    updateMessageStatus(errorFields.name);
+                    break;
+                case 'code':
+                    updateErrorMessage(errorFeedBacks.code, errorMessage);
+                    updateMessageStatus(errorFields.code);
+                    break;
+            }
+        }
+
+        function updateMessageStatus(feedbackElement) {
+            feedbackElement.addClass('is-invalid');
+        }
+
+        function updateErrorMessage(feedbackElement, errorMessage) {
+            feedbackElement.text(errorMessage);
+        }
+
 
         function editFunc(id, event) {
             let clickedButton = event.target;
