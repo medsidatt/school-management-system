@@ -4,15 +4,11 @@ namespace App\Http\Controllers\exams;
 
 use App\Http\Controllers\Controller;
 use App\Models\Classes;
-use App\Models\ClassSubject;
 use App\Models\Exam;
 use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Symfony\Component\Console\Input\StringInput;
-use Yajra\DataTables\DataTables;
 
 class FirstExamController extends Controller
 {
@@ -62,35 +58,6 @@ class FirstExamController extends Controller
             }
     }
 
-
-    public function studentSubjects(Request $request)
-    {
-
-        if (request()->ajax()) {
-            $studentId = $request->student_id;
-            $quarter = 1;
-
-            $subjectsNotTaken = Subjects::whereNotIn('id', function ($query) use ($studentId, $quarter) {
-                $query->select('subjects.id')
-                    ->from('students')
-                    ->join('exams', 'students.id', '=', 'exams.student_id')
-                    ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
-                    ->where('students.id', $studentId)
-                    ->where('exams.quarter', $quarter);
-            })->get();
-
-            return response()->json(['subjects' => $subjectsNotTaken]);
-        }
-
-    }
-
-
-    public function edit()
-    {
-        if (request()->ajax()) {
-            return response()->json(['data' => request()->id]);
-        }
-    }
 
     public function filteredExams(Request $request)
     {

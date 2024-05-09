@@ -27,7 +27,6 @@
     <link href="{{ asset('assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap/css/jquery-confirm.css') }}" rel="stylesheet">
 
     <!-- Template Main CSS File -->
@@ -35,7 +34,6 @@
     <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet">
 
 
-    <!-- CDN -->
     <script src="{{ asset('assets/vendor/bootstrap/js/jquery.min.js') }}"></script>
     <link href="{{ asset('assets/vendor/bootstrap/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <script src="{{ asset('assets/vendor/bootstrap/js/jquery.dataTables.min.js') }}"></script>

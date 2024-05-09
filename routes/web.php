@@ -90,6 +90,8 @@ Route::middleware('isLoggedIn')->group(function () {
 Route::middleware('isLoggedIn')->group(function () {
 
     Route::get('subject', [SubjectsController::class, 'index'])->name('subjects');
+    Route::post('subject', [SubjectsController::class, 'store'])->name('subjects');
+    Route::post('subject/delete', [SubjectsController::class, 'destroy'])->name('subjects.delete');
 
 });
 
@@ -102,8 +104,6 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('exams/quarters/first-quarter/edit', [FirstExamController::class, 'edit'])->name('exams.quarters.first.edit');
     Route::post('exams/quarters/first-quarter/delete', [FirstExamController::class, 'destroy'])->name('exams.quarters.first.delete');
     Route::post('exams/quarters/first-quarter/student-subjects', [FirstExamController::class, 'studentSubjects'])->name('exams.quarters.first.student-subjects');
-
-
 
 
 });

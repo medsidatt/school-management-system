@@ -222,50 +222,50 @@
                         subjectSelect.append('<option selected value="">Matiere ~</option>');
                         $.each(response.subjects, function (index, value) {
                             subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
-                        })
-                        $.each(response.students, function (index, value) {
-                            studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
-                        })
-                        table.DataTable({
-                            language: {
-                                info: 'Affichage de la page _PAGE_ sur _PAGES_',
-                                infoEmpty: 'Aucun enregistrement disponible',
-                                emptyTable: "Aucun enregistrement disponible",
-                                infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
-                                lengthMenu: 'Afficher les enregistrements _MENU_ par page',
-                                zeroRecords: 'Rien trouvé - désolé',
-                                searchPlaceholder: 'Recherche',
-                                search: 'Rechercher',
-                            },
-                            processing: true,
-                            serverSide: true,
-                            ajax: {
-                                url: "{{ route('exams.quarters.first.filtered') }}",
-                                data: {class_id: classId},
-                            },
-                            scrollY: 200,
-                            pagingType: 'simple_numbers',
-                            columns: [
-                                {data: 'stu_id'},
-                                {
-                                    data: 'stu.fn',
-                                    render: function (data, type, row, meta) {
-                                        return row.stu_fn + ' ' + row.stu_ln;
-                                    }
+                        }),
+                            $.each(response.students, function (index, value) {
+                                studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
+                            }),
+                            table.DataTable({
+                                language: {
+                                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                                    infoEmpty: 'Aucun enregistrement disponible',
+                                    emptyTable: "Aucun enregistrement disponible",
+                                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                                    zeroRecords: 'Rien trouvé - désolé',
+                                    searchPlaceholder: 'Recherche',
+                                    search: 'Rechercher',
                                 },
-                                {data: 'sub_name'},
-                                {data: 'note', searching: false},
-                                {data: 'action', orderable: false}
-                            ]
-                            ,
-                            "createdRow": function (row, data, td) {
-                                $(row).find('td:eq(0)').attr('data-student-id', data.id);
-                                $(row).find('td:eq(1)').attr('data-student', data.stu_id);
-                                $(row).find('td:eq(2)').attr('data-subject', data.sub_id);
-                                $(row).find('td:eq(3)').attr({'data-note': data.note, 'data-id': data.id});
-                                $(row).find('td').css('padding', '1px');
-                            }
-                        });
+                                processing: true,
+                                serverSide: true,
+                                ajax: {
+                                    url: "{{ route('exams.quarters.first.filtered') }}",
+                                    data: {class_id: classId},
+                                },
+                                scrollY: 400,
+                                pagingType: 'simple_numbers',
+                                columns: [
+                                    {data: 'stu_id'},
+                                    {
+                                        data: 'stu.fn',
+                                        render: function (data, type, row, meta) {
+                                            return row.stu_fn + ' ' + row.stu_ln;
+                                        }
+                                    },
+                                    {data: 'sub_name'},
+                                    {data: 'note', searching: false},
+                                    {data: 'action', orderable: false}
+                                ]
+                                ,
+                                "createdRow": function (row, data, td) {
+                                    $(row).find('td:eq(0)').attr('data-student-id', data.id);
+                                    $(row).find('td:eq(1)').attr('data-student', data.stu_id);
+                                    $(row).find('td:eq(2)').attr('data-subject', data.sub_id);
+                                    $(row).find('td:eq(3)').attr({'data-note': data.note, 'data-id': data.id});
+                                    $(row).find('td').css('padding', '1px');
+                                }
+                            });
                     }
 
                 });
@@ -300,10 +300,6 @@
             $.confirm({
                 title: 'Confirmer!',
                 content: 'Voulez vous suprimer cette note!',
-                confirmButton: 'Okay',
-                cancelButton: 'Cancel',
-                confirmButtonClass: 'btn-danger',
-                cancelButtonClass: 'btn-default',
                 buttons: {
                     confirm: {
                         text: 'Suprimer',
