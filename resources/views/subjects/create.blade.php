@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Inscrir un etudiant')
+@section('title', 'Creer une classes')
 @section('content')
 
     @isset($success)

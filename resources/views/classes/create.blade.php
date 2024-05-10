@@ -81,6 +81,8 @@
                 }
             });
         });
+
+
         let classForm = $('#class-form'), nameField = $('#name'),
             nameError = $('#name-error');
         const subjectCount = $('[id^="subject"]').length;

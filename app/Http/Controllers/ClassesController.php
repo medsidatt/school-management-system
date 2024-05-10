@@ -13,14 +13,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Mockery\Exception;
 use MongoDB\Driver\Session;
+use function PHPUnit\Framework\callback;
 
 class ClassesController extends Controller
 {
 
-    public function index(): View
+    public function index()
     {
         $classes = Classes::all();
-
+        if (request()->ajax()) {
+            return datatables()->of($classes)
+                ->addColumn('action', 'classes.class-action')
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
         return view('classes.index', [
             'classes' => $classes
         ]);
@@ -70,8 +77,7 @@ class ClassesController extends Controller
             DB::commit();
             $request->session()->put('success', 'Vous avez creer une nouvelle classe');
             return response()->json(['success' => true, 'redirect' => route('classes')]);
-        }
-        else{
+        } else {
             DB::rollBack();
         }
 
