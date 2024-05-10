@@ -123,11 +123,10 @@
             $('#id').val('');
             nameField.val('');
             $('#subjects').val('');
-            const checkbox = $(`#subject${i}`);
-            const coefficientInput = $(`#coef${i}`);
+
             for (let i = 0; i < subjectCount; i++) {
-                coefficientInput.val('');
-                checkbox
+                $(`#subject${i}`).prop('checked', false);
+                $(`#coef${i}`).val('');
             }
 
         }
