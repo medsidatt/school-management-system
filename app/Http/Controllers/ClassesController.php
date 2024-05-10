@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassPostRequest;
 use App\Models\Classes;
+use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -136,9 +137,18 @@ class ClassesController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy()
     {
-        $class = Classes::find($id);
+        $class = Classes::find(request()->id);
+        if ($class->subjects()->exists()) {
+            $class->subjects()->detach();
+        }
+        if ($class->students()->exists()) {
+            $class->students()->detach();
+        }
         $class->delete();
+        return response()->json(['success' => true]);
+
+
     }
 }

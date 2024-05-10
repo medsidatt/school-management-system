@@ -12,6 +12,7 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    <div id="alert"></div>
     @if(Session::has('success'))
         <div class="alert align-center alert-success alert-dismissible fade show" role="alert">
             <strong>La classe est cree</strong> <span>{{ Session::get('success') }}</span>
@@ -66,32 +67,71 @@
                 }
             });
 
-        $('#classes').DataTable({
-            ajax: "{{ route('classes') }}",
-            serverSide: true,
-            columns: [
-                {data: 'name'},
-                {
-                    data: 'created_at',
-                    name: 'created_at',
-                    render: function(timestamp) {
-                        const tempDate = new Date(timestamp);
-                        const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-                        const monthsOfYear = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-                        let month = monthsOfYear[tempDate.getMonth()];
-                        let dayOfWeek = daysOfWeek[tempDate.getDay()];
-                        let day = tempDate.getDate();
-                        let year = tempDate.getFullYear();
-                        let date = `${dayOfWeek} ${day < 10 ? 0 : ''}${day} ${month} ${year}`;
-                        return date;
-                    }
+            $('#classes').DataTable({
+                ajax: "{{ route('classes') }}",
+                serverSide: true,
+                columns: [
+                    {data: 'name'},
+                    {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function (timestamp) {
+                            const tempDate = new Date(timestamp);
+                            const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+                            const monthsOfYear = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                            let month = monthsOfYear[tempDate.getMonth()];
+                            let dayOfWeek = daysOfWeek[tempDate.getDay()];
+                            let day = tempDate.getDate();
+                            let year = tempDate.getFullYear();
+                            let date = `${dayOfWeek} ${day < 10 ? 0 : ''}${day} ${month} ${year}`;
+                            return date;
+                        }
 
-                },
-                {data: 'action', orderable: false}
-            ]
-        });
-
+                    },
+                    {data: 'action', orderable: false}
+                ]
+            });
         })
+
+        function editFunc(id) {
+            console.log(id)
+        }
+
+        function deleteFunc(id) {
+            $.confirm({
+                title: 'Confirmer!',
+                content: 'Voulez vous suprimer cette classe!',
+                buttons: {
+                    confirm: {
+                        text: 'Suprimer',
+                        btnClass: 'btn-success',
+                        action: function () {
+                            $.ajax({
+                                url: "{{ route('classes.delete') }}",
+                                method: 'POST',
+                                data: {id: id},
+
+                                success: function (response) {
+                                    $('#classes').DataTable().ajax.reload();
+                                    $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                                        '<strong>Alert</strong> <span>vous avez suprimee une classe</span>' +
+                                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                        '</div>');
+                                }
+
+                            });
+                        }
+                    },
+                    cancel: {
+                        text: 'Anulee',
+                        btnClass: 'btn-danger',
+                        action: function () {
+                            $.alert('Annulé!');
+                        }
+                    }
+                }
+            });
+        }
     </script>
 
 @endsection

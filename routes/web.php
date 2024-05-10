@@ -83,7 +83,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('classes/{id}', [ClassesController::class, 'show'])->name('classes.show');
     Route::get('classes/{id}/edit', [ClassesController::class, 'edit'])->name('classes.edit');
     Route::put('classes/{id}/edit', [ClassesController::class, 'update'])->name('classes.edit');
-    Route::delete('classes/{id}/delete', [ClassesController::class, 'destroy'])->name('classes.delete');
+    Route::post('classes/delete', [ClassesController::class, 'destroy'])->name('classes.delete');
 
 });
 
