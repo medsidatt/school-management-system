@@ -10,10 +10,10 @@ class ClassSubject extends Model
     use HasFactory;
 
     protected $table = 'class_subjects';
-    protected $fillable = [
-      'subject',
-      'class',
-      'coef'
-    ];
+//    protected $fillable = [
+//      'subject',
+//      'class',
+//      'coefficient'
+//    ];
 
 }

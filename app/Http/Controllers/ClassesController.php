@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Mockery\Exception;
 use MongoDB\Driver\Session;
 
 class ClassesController extends Controller
@@ -28,9 +29,6 @@ class ClassesController extends Controller
     public function create()
     {
         $subjects = Subjects::all()->sortBy('name');
-//        if (request()->ajax()) {
-//            return response()->json(['subjects' => $subjects]);
-//        }
         return view('classes.create', [
             'subjects' => $subjects,
         ]);
@@ -47,16 +45,35 @@ class ClassesController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
-                Rule::unique('classes', 'name')->ignore($request->input('id'))
+                Rule::unique('classes', 'name')->ignore($request->id)
             ]
         ], $messages, $attributes);
-
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
         }
-        $request->session()->put('success', 'Vous avez creer une nouvelle classe');
-        return response()->json(['success' => true, 'redirect' => route('classes')]);
+        $coefficients = [];
+        $subjects = $request->subject;
+        foreach ($request->coefficient as $key => $value) {
+            if ($value != null) {
+                $coefficients[$key] = $value;
+            }
+        }
+
+
+        DB::beginTransaction();
+        $class = Classes::create($validator->validated());
+        if (!empty($coefficients) && !empty($subjects)) {
+            foreach ($subjects as $index => $subjectId) {
+                $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
+            }
+            DB::commit();
+            $request->session()->put('success', 'Vous avez creer une nouvelle classe');
+            return response()->json(['success' => true, 'redirect' => route('classes')]);
+        }
+        else{
+            DB::rollBack();
+        }
 
     }
 

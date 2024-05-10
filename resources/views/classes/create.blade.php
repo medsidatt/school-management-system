@@ -36,28 +36,34 @@
                 <div class="row mb-2 w-50">
                     <div class="form-group">
                         <label class="" for="class-name">Le nom du class</label>
-                        <input name="name" type="text" class="form-control" id="name">
-                        <span id="name-error" class="invalid-feedback"></span>
+                        <input id="name" name="name" type="text" class="form-control">
+                        <span id="name-error" class="text-danger"></span>
                     </div>
                 </div>
-                <div id="form-body">
-                    <div class="container">
-                        @foreach($subjects as $index => $subject)
-                            <div class="row border-radius border-1 border-secondary mb-2">
-                                <div class="col-sm-6">
-                                    <div class="form-check">
-                                        <input name="subject[]" class="form-check-input" type="checkbox" value="{{ $subject['id'] }}" id="subject{{ $index }}">
-                                        <label class="form-check-label" for="subject{{ $index }}">
-                                            {{ $subject['name'] }}
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <input type="text" name="coeficient[]" class="form-control" id="coef{{ $index }}">
-                                </div>
-                            </div>
-                        @endforeach
+                <div class="row py-1">
+                    <div class="col-sm-6">
+                        <h5>Les matieres</h5>
                     </div>
+                    <div class="col-sm-3">
+                        <h5>Les coefficients</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    @foreach($subjects as $index => $subject)
+                        <div class="col-sm-5">
+                            <div class="form-check">
+                                <label class="form-check-label" for="subject{{ $index }}">
+                                    {{ $subject['name'] }}
+                                </label>
+                                <input name="subject[]" class="form-check-input" type="checkbox"
+                                       value="{{ $subject['id'] }}" id="subject{{ $index }}"
+                                       data-subject="{{ $index }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <input name="coefficient[]" class="form-control" id="coef{{ $index }}">
+                        </div>
+                    @endforeach
                 </div>
             </div>
             <div class="card-footer">
@@ -67,10 +73,6 @@
         </form>
     </div>
 
-
-
-
-
     <script>
         $(document).ready(function () {
             $.ajaxSetup({
@@ -79,37 +81,16 @@
                 }
             });
         });
-
-        let classForm = $('#class-form');
-        let formBody = $('#form-body');
-
-        function createRow(index, value) {
-            formBody.append(`<div class="row border-radius border-1 border-secondary mb-2">
-            <div class="col-sm-6">
-                <div class="form-check">
-                    <input name="subject[]" class="form-check-input" type="checkbox" value="${value.id}" id="subject${index}">
-                    <label class="form-check-label" for="subject${index}">
-                        ${value.name}
-                    </label>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <input type="text" name="coeficient[]" class="form-control-sm" id="coef${index}">
-            </div>
-        </div>`);
-        } {{-- Row generator function --}}
-
+        let classForm = $('#class-form'), nameField = $('#name'),
+            nameError = $('#name-error');
+        const subjectCount = $('[id^="subject"]').length;
 
         function validateFormData() {
-            let nameField = $('#name');
-            let errorMessage = $('#name-error');
             let isValid = true;
-            const subjectCount = $('[id^="subject"]').length;
 
             for (let i = 0; i < subjectCount; i++) {
                 const checkbox = $(`#subject${i}`);
                 const coefficientInput = $(`#coef${i}`);
-
                 if (checkbox.prop('checked')) {
                     const coefficient = parseInt(coefficientInput.val());
                     if (isNaN(coefficient) || coefficient < 1 || coefficient > 8) {
@@ -120,32 +101,18 @@
                     }
                 }
             }
-            if (nameField.val() === ''){
+            if (nameField.val() === '') {
                 nameField.addClass('is-invalid');
-                errorMessage.text('Le nom du class est obligatoire');
-            }else {
+                nameError.text('Le nom du class est obligatoire');
+                isValid = false;
+            } else {
                 nameField.removeClass('is-invalid');
-                errorMessage.text('');
+                nameError.text('');
             }
 
             return isValid;
         }
 
-        {{--classForm.ready(function () {--}}
-
-        {{--    $.ajax({--}}
-        {{--        url: "{{ route('classes.create') }}",--}}
-        {{--        type: 'GET',--}}
-        {{--        success: function (response) {--}}
-        {{--            $.each(response.subjects, function (index, value) {--}}
-        {{--                createRow(index, value);--}}
-        {{--            });--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--});--}}
-
-        let nameField = $('#name');
-        let nameError = $('#name-error');
 
         function clearErrors() {
             nameField.removeClass('is-invalid');
@@ -156,15 +123,19 @@
             $('#id').val('');
             nameField.val('');
             $('#subjects').val('');
+            const checkbox = $(`#subject${i}`);
+            const coefficientInput = $(`#coef${i}`);
+            for (let i = 0; i < subjectCount; i++) {
+                coefficientInput.val('');
+                checkbox
+            }
+
         }
 
         function handleErrors(errorMessage) {
             nameField.addClass('is-invalid');
             nameError.text(errorMessage);
         }
-
-        {{-- Subjects --}}
-
 
         $('#send-button').on('click', function () {
             let data = new FormData(classForm[0]);
@@ -176,23 +147,26 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        if(response.errors) {
+                        if (response.errors) {
                             clearErrors();
                             $.each(response.errors, function (index, errorMessage) {
                                 handleErrors(errorMessage);
                                 console.log(errorMessage);
                             });
+                        } else if (response.test) {
+                            console.log(response.test)
                         }else if (response.success && response.redirect) {
                             clearInputs()
                             window.location.href = response.redirect;
+                        } else if (response.data) {
+                            console.log(response)
                         }
                     }
                 });
-            } else {
-                console.log('not validated');
             }
         });
 
 
     </script>
+
 @endsection
