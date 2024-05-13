@@ -1,8 +1,7 @@
 <div class="btn-group" role="group" aria-label="">
     <button type="button" class="btn btn-outline-primary"
-            onclick="editFunc({{ $id }}, event)"
             style="padding: 1px">
-        <a href="javascript:void(0)" class="edit btn btn-primary">
+        <a href="{{ route('classes.edit.show', $id) }}" class="edit btn btn-primary">
             <i class="bi bi-pencil-fill"></i>
         </a>
     </button>

@@ -62,24 +62,38 @@ class ClassesController extends Controller
         }
         $coefficients = [];
         $subjects = $request->subject;
+        $i = 0;
         foreach ($request->coefficient as $key => $value) {
             if ($value != null) {
-                $coefficients[$key] = $value;
+                $coefficients[$i] = $value;
+                $i++;
             }
+
         }
 
-
-        DB::beginTransaction();
-        $class = Classes::create($validator->validated());
-        if (!empty($coefficients) && !empty($subjects)) {
-            foreach ($subjects as $index => $subjectId) {
-                $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
+        if ($request->id) {
+            $class = Classes::find($request->id);
+            $class->update($validator->validated());
+            if ($class == null) {
+                return response()->json(['notfound' => route('notfound')]);
+            } else {
+                if (!empty($coefficients) && !empty($subjects)) {
+                    foreach ($subjects as $index => $subjectId) {
+                        $class->subjects()->syncWithPivotValues($subjectId, ['coefficient' => $coefficients[$index]]);
+                    }
+                }
+                $request->session()->put('success', 'Vous avez modifier une nouvelle classe');
+                return response()->json(['success' => true, 'redirect' => route('classes')]);
             }
-            DB::commit();
+        } else {
+            $class = Classes::create($validator->validated());
+            if (!empty($coefficients) && !empty($subjects)) {
+                foreach ($subjects as $index => $subjectId) {
+                    $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
+                }
+            }
             $request->session()->put('success', 'Vous avez creer une nouvelle classe');
             return response()->json(['success' => true, 'redirect' => route('classes')]);
-        } else {
-            DB::rollBack();
         }
 
     }
@@ -95,27 +109,19 @@ class ClassesController extends Controller
     }
 
 
-    public function edit($id): View|RedirectResponse
+    public function edit($id)
     {
-
-        try {
-            $class = Classes::with('subjects')->find($id);
-            $class_subjects = array();
-            foreach ($class->subjects as $subject) {
-                $class_subjects[] = $subject->id;
-            }
-            $subjects = Subjects::all()->sortBy('name');
-            return view('classes.create', [
-                'subjects' => $subjects,
-                'class' => $class,
-                'class_subjects' => $class_subjects
-            ]);
-//                compact('subjects', 'class'));
-        } catch (\Exception) {
-            return redirect('not_found');
+        $subjects = Subjects::all();
+        $class = Classes::with('subjects')->find($id);
+        if ($class == null) {
+            return redirect()->route('notfound');
         }
-
-
+        return view("classes.create", [
+            'subjects' => $subjects,
+            'class_name' => $class->name,
+            'class_subjects' => $class->subjects,
+            'id' => $id
+        ]);
     }
 
     public function update(ClassPostRequest $request, $id): RedirectResponse

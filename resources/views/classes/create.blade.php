@@ -27,48 +27,64 @@
 
     <div class="card">
         <form id="class-form">
-            <input type="hidden" name="id">
+            @isset($id)
+                <input type="hidden" id="id" value="{{ $id }}">
+            @endisset
             <div class="card-header">
-                <h4>Les informaions de la classe</h4>
+                <h4>Les informations de la classe</h4>
             </div>
 
             <div class="card-body">
-                <div class="row mb-2 w-50">
+                <div class="row mb-2" style="max-width: 500px">
                     <div class="form-group">
-                        <label class="" for="class-name">Le nom du class</label>
-                        <input id="name" name="name" type="text" class="form-control">
+                        <label for="name">Le nom du class</label>
+                        <input id="name" name="name" type="text" class="form-control"
+                               @if(isset($class_name)) value="{{ $class_name }}" @endif
+                        >
                         <span id="name-error" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="row py-1">
-                    <div class="col-sm-6">
-                        <h5>Les matieres</h5>
-                    </div>
-                    <div class="col-sm-3">
-                        <h5>Les coefficients</h5>
-                    </div>
-                </div>
-                <div class="row">
+                <div class="row" style="width: 800px;">
+                    <h5>Les matieres et les coefficients sont optionales</h5>
                     @foreach($subjects as $index => $subject)
-                        <div class="col-sm-5">
-                            <div class="form-check">
-                                <label class="form-check-label" for="subject{{ $index }}">
-                                    {{ $subject['name'] }}
-                                </label>
-                                <input name="subject[]" class="form-check-input" type="checkbox"
-                                       value="{{ $subject['id'] }}" id="subject{{ $index }}"
-                                       data-subject="{{ $index }}">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="subject{{ $index }}">
+                                        {{ $subject->name }}
+                                    </label>
+                                    <input name="subject[]" class="form-check-input" type="checkbox"
+                                           @isset($class_subjects)
+                                               @foreach($class_subjects as $class_subject)
+                                                   @if($class_subject->id == $subject->id)
+                                                       {{ "checked" }}
+                                                   @endif
+                                               @endforeach
+                                           @endisset
+                                           value="{{ $subject->id }}" id="subject{{ $index }}"
+                                           data-subject="{{ $index }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-3 p-1" style="width: 50px;">
+                                <input name="coefficient[]" class="form-control" id="coef{{ $index }}"
+                                       @isset($class_subjects)
+                                           @foreach($class_subjects as $class_subject)
+                                               @if($class_subject->id == $subject->id)
+                                                   value="{{ $subject->id }}"
+
+                                    @endif
+                                    @endforeach
+                                    @endisset
+
+                                >
                             </div>
                         </div>
-                        <div class="col-sm-3">
-                            <input name="coefficient[]" class="form-control" id="coef{{ $index }}">
-                        </div>
                     @endforeach
+
                 </div>
             </div>
             <div class="card-footer">
                 <button id="send-button" type="button" class="btn btn-primary">Enregistrer</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
             </div>
         </form>
     </div>
@@ -96,10 +112,10 @@
                 if (checkbox.prop('checked')) {
                     const coefficient = parseInt(coefficientInput.val());
                     if (isNaN(coefficient) || coefficient < 1 || coefficient > 8) {
-                        coefficientInput.addClass('is-invalid');
+                        coefficientInput.css("border", "1px solid red");
                         isValid = false;
                     } else {
-                        coefficientInput.removeClass('is-invalid');
+                        coefficientInput.css("border", "");
                     }
                 }
             }
@@ -139,7 +155,9 @@
         }
 
         $('#send-button').on('click', function () {
+            let id = $('#id').val();
             let data = new FormData(classForm[0]);
+            data.append('id', id);
             if (validateFormData()) {
                 $.ajax({
                     url: "{{ route('classes.create') }}",
@@ -148,19 +166,18 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
+                        console.log(response)
                         if (response.errors) {
                             clearErrors();
                             $.each(response.errors, function (index, errorMessage) {
                                 handleErrors(errorMessage);
-                                console.log(errorMessage);
                             });
-                        } else if (response.test) {
-                            console.log(response.test)
-                        }else if (response.success && response.redirect) {
+                        } else if (response.success && response.redirect) {
                             clearInputs()
                             window.location.href = response.redirect;
-                        } else if (response.data) {
-                            console.log(response)
+                        }else if (response.notfound && response.redirect) {
+                            clearInputs()
+                            window.location.href = response.redirect;
                         }
                     }
                 });
