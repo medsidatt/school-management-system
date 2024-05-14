@@ -157,4 +157,15 @@ class ClassesController extends Controller
 
 
     }
+
+
+    public function studentsByClass(Request $request)
+    {
+//        return response()->json(['test' => Student::where('class', 1)->get()]);
+        return datatables()->of(Student::where('class', 1)->get())
+            ->addColumn('action', 'classes.student-action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+    }
 }
