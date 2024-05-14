@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
 use App\Models\Classes;
+use App\Models\Exam;
 use App\Models\Student;
 use App\Models\StudentParent;
 use Illuminate\Http\RedirectResponse;
@@ -95,8 +96,6 @@ class StudentController extends Controller
 
     public function update(StorePostRequest $request) {
 
-//        $validator->validated();
-
         $parent_data = [
             'first_name' => $request->p_first_name,
             'last_name' => $request->p_last_name,
@@ -131,44 +130,25 @@ class StudentController extends Controller
 
     public function destroy()
     {
-        dd('hello');
-        $student = $this->getStudentById($id);
+        $student = $this->getStudentById(request()->id);
         $parent = Student::select('parent', $student->p_id)
             ->where('parent', $student->p_id);
         if ($student == null) {
-            return redirect('notfound');
-        }
-        if ($parent->count() > 1) {
-            $student->delete();
-            return redirect()->back()->with('success', 'Suprimer avec succès');
+            return response()->json(['notfound' => true, 'redirect' => route('notfound')]);
         }else {
+            Exam::where('student_id', $student->id)->delete();
             $student->delete();
-            $parent = StudentParent::find($student->parent);
-            $parent->delete();
-            return redirect()->back()->with('success', 'Suprimer avec succès');
+            if ($parent->count() == 1) {
+                $parent = StudentParent::find($student->parent);
+                $parent->delete();
+            }
+            return response()->json(['success' => 'L\'etudiant est suprime avec success']);
         }
     }
 
     private function getStudentById($id)
     {
-//        $student = Student::join('parents as p', 'parent', 'p.id')
-//            ->join('classes as c', 'class', 'c.id')
-//            ->where('students.id',  $id)
-//            ->select(
-//                'students.*',
-//                'c.id as c_id',
-//                'c.name as name',
-//                'p.id as p_id',
-//                'p.first_name as p_fn',
-//                'p.nni as p_nni',
-//                'p.tel as p_tel',
-//                'p.last_name as p_ln',
-//                'p.sex as p_sex',
-//                'p.date_of_birth as p_dob'
-//            )
-//            ->first();
-        $student = Student::with('classes', 'parents')->find($id);
-        return $student;
+        return Student::with('classes', 'parents')->find($id);
     }
 
 }

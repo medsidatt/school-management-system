@@ -53,14 +53,14 @@ class StorePostRequest extends FormRequest
         ];
     }
 
-    public function withValidator($validator)
-    {
-        $validator->after(function ($validator) {
-            if ($this->request->get('p_nni') % 97 !== 1) {
-                $validator->errors()->add('p_nni', 'Le nni est invalide');
-            }
-        });
-    }
+//    public function withValidator($validator)
+//    {
+//        $validator->after(function ($validator) {
+//            if ($this->request->get('p_nni') % 97 !== 1) {
+//                $validator->errors()->add('p_nni', 'Le nni est invalide');
+//            }
+//        });
+//    }
     public function messages(): array
     {
         return [

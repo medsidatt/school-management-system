@@ -36,15 +36,17 @@
                         </div>
 
                         <!-- Table with stripped rows -->
-                        <table id="classes" class="table table-striped table-responsive">
-                            <thead class="table-bordered">
-                            <tr>
-                                <th>Nom</th>
-                                <th>Date de creation</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                        </table>
+                        <div style="padding: 3px; border: 1px solid black">
+                            <table id="classes" class="table table-striped table-responsive">
+                                <thead class="table-bordered">
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Date de creation</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
                         <!-- End Table with stripped rows -->
 
                     </div>

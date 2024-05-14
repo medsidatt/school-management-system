@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassPostRequest;
 use App\Models\Classes;
+use App\Models\ClassSubject;
 use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Validation\Rule;
@@ -70,16 +71,19 @@ class ClassesController extends Controller
             }
 
         }
-
+//        return response()->json(['notfound' => route('notfound')]);
         if ($request->id) {
+
             $class = Classes::find($request->id);
             $class->update($validator->validated());
             if ($class == null) {
                 return response()->json(['notfound' => route('notfound')]);
             } else {
                 if (!empty($coefficients) && !empty($subjects)) {
+                    $class->subjects()->detach();
                     foreach ($subjects as $index => $subjectId) {
-                        $class->subjects()->syncWithPivotValues($subjectId, ['coefficient' => $coefficients[$index]]);
+//                        return response()->json(['notfound' => $coefficients[$index]]);
+                        $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
                     }
                 }
                 $request->session()->put('success', 'Vous avez modifier une nouvelle classe');
@@ -101,6 +105,7 @@ class ClassesController extends Controller
 
     public function show($id): View
     {
+//        dd(Student::where('class', 1)->orderBy('created_at')->get());
         $class = Classes::with('students', 'subjects')->find($id);
 
         return view('classes.show', [
@@ -112,14 +117,15 @@ class ClassesController extends Controller
     public function edit($id)
     {
         $subjects = Subjects::all();
-        $class = Classes::with('subjects')->find($id);
-        if ($class == null) {
+        $class = Classes::find($id);
+        $class_subject = ClassSubject::where('class', $id)->get();
+        if ($class_subject == null) {
             return redirect()->route('notfound');
         }
         return view("classes.create", [
             'subjects' => $subjects,
             'class_name' => $class->name,
-            'class_subjects' => $class->subjects,
+            'class_subjects' => $class_subject,
             'id' => $id
         ]);
     }
@@ -161,8 +167,7 @@ class ClassesController extends Controller
 
     public function studentsByClass(Request $request)
     {
-//        return response()->json(['test' => Student::where('class', 1)->get()]);
-        return datatables()->of(Student::where('class', 1)->get())
+        return datatables()->of(Student::where('class', $request->id)->orderBy('created_at')->get())
             ->addColumn('action', 'classes.student-action')
             ->rawColumns(['action'])
             ->addIndexColumn()

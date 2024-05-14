@@ -1,7 +1,7 @@
 <div class="btn-group" role="group" aria-label="">
     <button type="button" class="btn btn-outline-primary"
             style="padding: 1px">
-        <a href="{{ route('classes.show', $id) }}" class="edit btn btn-secondary">
+        <a href="{{ route('classes.show', $id) }}" class="edit btn btn-success">
             <i class="bi bi-eye-fill"></i>
         </a>
     </button>

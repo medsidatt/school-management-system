@@ -49,7 +49,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('students/{id}', [StudentController::class, 'view'])->name('students.view');
     Route::get('students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('students/{id}/edit', [StudentController::class, 'update'])->name('students.edit');
-    Route::post('delete-student', [StudentController::class, 'destroy']);
+    Route::post('delete-student', [StudentController::class, 'destroy'])->name('students.delete');
 });
 
 

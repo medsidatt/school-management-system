@@ -13,6 +13,8 @@
         </nav>
     </div><!-- End Page Title -->
 
+    <div id="alert"></div>
+
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
@@ -30,21 +32,22 @@
                         </div>
 
                         <!-- Table with stripped rows -->
-                        <table id="students" class="table table-striped table-responsive">
-                            <thead class="table-bordered">
-                            <tr>
-                                <th>#</th>
-                                <th>Photo</th>
-                                <th>RIM</th>
-                                <th>Nom</th>
-                                <th>Sexe</th>
-                                <th>Classe</th>
-                                <th data-type="date" data-format="YYYY/DD/MM">Date de naissance</th>
-                                <th>Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-
+                        <div style="padding: 3px; border: 1px solid black">
+                            <table id="students" class="table table-striped">
+                                <thead class="table-bordered">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Photo</th>
+                                    <th>RIM</th>
+                                    <th>Nom</th>
+                                    <th>Sexe</th>
+                                    <th>Classe</th>
+                                    <th data-type="date" data-format="YYYY/DD/MM">Date de naissance</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
 
                             <div class="modal fade" id="student-modal" tabindex="-1"
                                  aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -137,23 +140,44 @@
         });
 
         function deleteFunc(id) {
-            if (confirm("Delete record?") == true) {
-                var id = id;
-                // ajax
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('delete-student') }}",
-                    data: {
-                        id: id
+            $.confirm({
+                title: 'Confirmer!',
+                content: 'Voulez vous suprimer cette etudiant!',
+                buttons: {
+                    confirm: {
+                        text: 'Suprimer',
+                        btnClass: 'btn-success',
+                        action: function () {
+                            $.ajax({
+                                url: "{{ route('students.delete') }}",
+                                method: 'POST',
+                                data: {id: id},
+
+                                success: function (response) {
+                                    if (response.notfound && response.redirect) {
+                                        window.location.href = response.redirect;
+                                    }
+                                    $('#students').DataTable().ajax.reload();
+                                    $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                                        '<strong>Suprimee</strong> <span>vous avez suprimee un etudiant</span>' +
+                                        '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                                        '</div>');
+                                }
+
+                            });
+                        }
                     },
-                    dataType: 'json',
-                    success: function (res) {
-                        var oTable = $('#students').dataTable();
-                        oTable.fnDraw(false);
+                    cancel: {
+                        text: 'Anulee',
+                        btnClass: 'btn-danger',
+                        action: function () {
+                            $.alert('Annulé!');
+                        }
                     }
-                });
-            }
+                }
+            });
         }
+
 
     </script>
 

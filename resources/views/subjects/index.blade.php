@@ -122,47 +122,28 @@
             });
             let table = $('#subjects');
 
-            $.ajax({
-                url: "{{ route('subjects') }}",
-                serverSide: true,
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                text: 'My button',
-                                action: function (e, dt, node, config) {
-                                    alert('Button activated');
-                                }
-                            }
-                        ]
-                    }
+            table.DataTable({
+                language: {
+                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                    infoEmpty: 'Aucun enregistrement disponible',
+                    emptyTable: "Aucun enregistrement disponible",
+                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                    zeroRecords: 'Rien trouvé - désolé',
+                    searchPlaceholder: 'Recherche',
+                    search: 'Rechercher',
                 },
-                success: function (response) {
-                    table.DataTable({
-                        language: {
-                            info: 'Affichage de la page _PAGE_ sur _PAGES_',
-                            infoEmpty: 'Aucun enregistrement disponible',
-                            emptyTable: "Aucun enregistrement disponible",
-                            infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
-                            lengthMenu: 'Afficher les enregistrements _MENU_ par page',
-                            zeroRecords: 'Rien trouvé - désolé',
-                            searchPlaceholder: 'Recherche',
-                            search: 'Rechercher',
-                        },
-                        scrollY: 400,
-                        pagingType: 'simple_numbers',
-                        ajax: "{{ route('subjects') }}",
-                        columns: [
-                            {data: 'id', name: 'id'},
-                            {data: 'name', name: 'name'},
-                            {data: 'code', name: 'code'},
-                            {data: 'action', orderable: false},
-                        ],
-                    });
+                scrollY: 400,
+                pagingType: 'simple_numbers',
+                ajax: {
+                    url: "{{ route('subjects') }}",
                 },
-                error: function (xhr, status, error) {
-                    console.error('error');
-                }
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'name', name: 'name'},
+                    {data: 'code', name: 'code'},
+                    {data: 'action', orderable: false},
+                ],
             });
 
 

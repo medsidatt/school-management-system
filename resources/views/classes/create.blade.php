@@ -27,9 +27,7 @@
 
     <div class="card">
         <form id="class-form">
-            @isset($id)
-                <input type="hidden" id="id" value="{{ $id }}">
-            @endisset
+                <input type="hidden" id="id" value="@isset($id){{ $id }}@endisset">
             <div class="card-header">
                 <h4>Les informations de la classe</h4>
             </div>
@@ -56,7 +54,7 @@
                                     <input name="subject[]" class="form-check-input" type="checkbox"
                                            @isset($class_subjects)
                                                @foreach($class_subjects as $class_subject)
-                                                   @if($class_subject->id == $subject->id)
+                                                   @if($class_subject->subject == $subject->id)
                                                        {{ "checked" }}
                                                    @endif
                                                @endforeach
@@ -69,8 +67,8 @@
                                 <input name="coefficient[]" class="form-control" id="coef{{ $index }}"
                                        @isset($class_subjects)
                                            @foreach($class_subjects as $class_subject)
-                                               @if($class_subject->id == $subject->id)
-                                                   value="{{ $subject->id }}"
+                                               @if($class_subject->subject == $subject->id)
+                                                   value="{{ $class_subject->coefficient }}"
 
                                     @endif
                                     @endforeach
