@@ -173,4 +173,15 @@ class ClassesController extends Controller
             ->addIndexColumn()
             ->make(true);
     }
+
+
+    public function subjectsByClass()
+    {
+        $class = Classes::with('subjects')->where('id', 1)->get();
+        return datatables()->of($class->first()->subjects)
+            ->addColumn('action', 'classes.subjects-action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+    }
 }

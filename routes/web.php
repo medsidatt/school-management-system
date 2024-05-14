@@ -85,6 +85,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::post('classes/delete', [ClassesController::class, 'destroy'])->name('classes.delete');
     Route::get('classes/{id}', [ClassesController::class, 'show'])->name('classes.show');
     Route::get('classes/class/students', [ClassesController::class, 'studentsByClass'])->name('studentsByClass');
+    Route::get('classes/class/subjects', [ClassesController::class, 'subjectsByClass'])->name('subjectsByClass');
 
 });
 

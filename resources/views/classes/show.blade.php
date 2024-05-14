@@ -3,6 +3,12 @@
 
 @section('content')
 
+    <style>
+         th, td {
+            text-align: left;
+        }
+    </style>
+
     <div class="pagetitle">
         <h1>Informations d'un classe</h1>
         <nav>
@@ -37,13 +43,14 @@
 
                     <div style="border: 1px black solid; padding: 3px;">
 
-                        <table class="table table-striped" id="students">
+                        <table class="table" id="students">
                             <thead>
                             <tr>
                                 <td>N<sup>o</sup></td>
                                 <td>Nom et prenom</td>
                                 <td>Rim</td>
                                 <td>Sexe</td>
+                                <td>Date de naissance</td>
                                 <td>Actions</td>
                             </tr>
                             </thead>
@@ -58,13 +65,11 @@
 
                     <div style="border: 1px black solid; padding: 3px;">
 
-                        <table class="table table-striped" id="students">
+                        <table class="table" id="subjects">
                             <thead>
                             <tr>
-                                <td>N<sup>o</sup></td>
-                                <td>Nom et prenom</td>
-                                <td>Rim</td>
-                                <td>Sexe</td>
+                                <td>Label</td>
+                                <td>Code</td>
                                 <td>Actions</td>
                             </tr>
                             </thead>
@@ -79,7 +84,7 @@
 
                     <div style="border: 1px black solid; padding: 3px;">
 
-                        <table class="table table-striped" id="students">
+                        <table class="table table-responsive" id="teachers">
                             <thead>
                             <tr>
                                 <td>N<sup>o</sup></td>
@@ -96,6 +101,43 @@
             </div>
 
         </div>
+
+        <!-- Modal HTML -->
+        <div id="myModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ajouter une nouvelle matiere</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="modal-form">
+                            <input id="id" type="hidden" name="id" value="">
+                            <div class="form-group">
+                                <label for="name">Le nom du matiere</label>
+                                <input class="form-control" name="name" id="name"
+                                       aria-describedby="emailHelp"
+                                       placeholder="Le nom du matiere">
+                                <small id="name-error" class="text-danger"></small>
+                            </div>
+                            <div class="form-group">
+                                <label for="code">Le code du matiere</label>
+                                <input name="code" class="form-control" id="code"
+                                       placeholder="Le code du matiere">
+                                <small id="code-error" class="text-danger"></small>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="hide-modal" type="button" class="btn btn-secondary">Anulee
+                        </button>
+                        <button id="send-button" type="button" class="btn btn-primary">
+                            Enregistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </section>
 
 
@@ -119,6 +161,7 @@
         let studentsCard = $('#students-card');
         let subjectsCard = $('#subjects-card');
         let teachersCard = $('#teachers-card');
+        let subjectTable = $('#subjects');
 
         function reloadStudentTable() {
             return studentsTable.DataTable({
@@ -162,12 +205,73 @@
             });
         }
 
+        function editSubjectFunc(id, event) {
+            let clickedButton = event.target;
+            let row = $(clickedButton).closest('tr');
+            $('#id').val(id);
+            $('#name').val(row.find('td:eq(0)').text());
+            $('#code').val(row.find('td:eq(1)').text());
+
+            console.log(row.find('td:eq(1)').text());
+            $("#myModal").modal('show');
+        }
+
+        $("#show-modal").click(function () {
+            $("#myModal").modal('show');
+        });
+
+        $("#hide-modal").click(function () {
+            emptyFields();
+            $("#myModal").modal('hide');
+        });
+
+        function emptyFields() {
+            $('#name').val('');
+            $('#code').val('');
+            $('#name-error').text('');
+            $('#code-error').text('');
+            $('#id').val('');
+        }
+
+        function reloadSubjectTable() {
+            return subjectTable.DataTable({
+                language: {
+                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                    infoEmpty: 'Aucun enregistrement disponible',
+                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                    zeroRecords: 'Rien trouvé - désolé',
+                    searchPlaceholder: 'Recherche',
+                    search: 'Rechercher',
+                },
+                scrollY: 400,
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: "{{ route('subjectsByClass') }}",
+                    data: {id: {{$class->id}}}
+                },
+                columns: [
+                    {data: 'name'},
+                    {data: 'code'},
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false
+                    },
+                ]
+            });
+        }
+
         function studentsFunc(event) {
             let activeNav = $(event.target);
             makeItActive(activeNav);
             subjectsCard.hide();
             teachersCard.hide();
             studentsCard.show();
+            if ($.fn.dataTable.isDataTable(studentsTable)) {
+                studentsTable.DataTable().destroy();
+            }
             reloadStudentTable().ajax.reload();
         }
         function teachersFunc(event) {
@@ -183,6 +287,10 @@
             teachersCard.hide();
             studentsCard.hide();
             subjectsCard.show();
+            if ($.fn.dataTable.isDataTable(subjectTable)) {
+                subjectTable.DataTable().destroy();
+            }
+            reloadSubjectTable().ajax.reload();
         }
 
         function makeItActive(navActive) {
@@ -229,6 +337,84 @@
                     }
                 }
             });
+        }
+
+
+        $("#send-button").click(function () {
+            let data = new FormData($('#modal-form')[0]);
+            $.ajax({
+                url: "{{ route('subjects') }}",
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.errors) {
+                        clearErrorMessages();
+                        $.each(response.errors, function (field, errorMessage) {
+                            handleErrorMessage(field, errorMessage);
+                        });
+                    } else if (response.update) {
+                        $("#myModal").modal('hide');
+                        emptyFields();
+                        $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                            '<strong>Modification</strong> <span>vous avez modifier une matiere</span>' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                            '</div>');
+                        $('#subjects').DataTable().ajax.reload();
+                    } else {
+                        $("#myModal").modal('hide');
+                        emptyFields();
+                        $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
+                            '<strong>Alert</strong> <span>vous avez ajouter une nouvelle matiere</span>' +
+                            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                            '</div>');
+                        $('#subjects').DataTable().ajax.reload();
+                    }
+                }
+            });
+        });
+
+        let errorFeedBacks = {
+            name: $('#name-error'),
+            code: $('#code-error')
+        };
+        let errorFields = {
+            name: $('#name'),
+            code: $('#code')
+        };
+
+        function clearErrorMessages() {
+            updateErrorMessage(errorFeedBacks.name, '');
+            updateErrorMessage(errorFeedBacks.code, '');
+            removeInvalidClasses();
+        }
+
+        function removeInvalidClasses() {
+            errorFields.name.removeClass('is-invalid')
+            errorFields.code.removeClass('is-invalid')
+        }
+
+
+        function handleErrorMessage(field, errorMessage) {
+            switch (field) {
+                case 'name':
+                    updateErrorMessage(errorFeedBacks.name, errorMessage);
+                    updateMessageStatus(errorFields.name);
+                    break;
+                case 'code':
+                    updateErrorMessage(errorFeedBacks.code, errorMessage);
+                    updateMessageStatus(errorFields.code);
+                    break;
+            }
+        }
+
+        function updateMessageStatus(feedbackElement) {
+            feedbackElement.addClass('is-invalid');
+        }
+
+        function updateErrorMessage(feedbackElement, errorMessage) {
+            feedbackElement.text(errorMessage);
         }
     </script>
 
