@@ -3,15 +3,7 @@
 
 @section('content')
 
-    @if(Session::has('success'))
-        <x-alert type="success">
-            {{ Session::get('success') }}!
-        </x-alert>
-    @elseif(Session::has('fail'))
-        <x-alert type="danger">
-            {{ Session::get('fail') }}!
-        </x-alert>
-    @endif
+
 
     <div class="pagetitle">
         <h1>List des eleves</h1>
@@ -24,6 +16,15 @@
     </div><!-- End Page Title -->
 
     <div id="alert"></div>
+    @if(Session::has('success'))
+        <x-alert type="success">
+            {{ Session::get('success') }}!
+        </x-alert>
+    @elseif(Session::has('fail'))
+        <x-alert type="danger">
+            {{ Session::get('fail') }}!
+        </x-alert>
+    @endif
 
     <section class="section">
         <div class="row">

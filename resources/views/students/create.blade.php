@@ -2,16 +2,6 @@
 @section('title', 'Inscrir un etudiant')
 @section('content')
 
-    @if(Session::has('success'))
-        <x-alert type="success">
-            {{ Session::get('success') }}!
-        </x-alert>
-    @elseif(Session::has('fail'))
-        <x-alert type="danger">
-            {{ Session::get('fail') }}!
-        </x-alert>
-    @endif
-
     <div class="pagetitle">
         <h1>Inscrit un etudiant</h1>
         <nav>
