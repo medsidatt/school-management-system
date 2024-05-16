@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\exams\FirstExamController;
+use App\Http\Controllers\exams\SecondExamController;
+use App\Http\Controllers\exams\ThirdExamController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentController;
@@ -106,6 +108,21 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('exams/quarters/first-quarter/edit', [FirstExamController::class, 'edit'])->name('exams.quarters.first.edit');
     Route::post('exams/quarters/first-quarter/delete', [FirstExamController::class, 'destroy'])->name('exams.quarters.first.delete');
     Route::post('exams/quarters/first-quarter/student-subjects', [FirstExamController::class, 'studentSubjects'])->name('exams.quarters.first.student-subjects');
+
+    Route::get('exams/quarters/second-quarter', [SecondExamController::class, 'index'])->name('exams.quarters.second');
+    Route::get('exams/quarters/second-quarter/chose', [SecondExamController::class, 'filteredExams'])->name('exams.quarters.second.filtered');
+    Route::post('exams/quarters/second-quarter', [SecondExamController::class, 'store'])->name('exams.quarters.second');
+    Route::get('exams/quarters/second-quarter/edit', [SecondExamController::class, 'edit'])->name('exams.quarters.second.edit');
+    Route::post('exams/quarters/second-quarter/delete', [SecondExamController::class, 'destroy'])->name('exams.quarters.second.delete');
+    Route::post('exams/quarters/second-quarter/student-subjects', [SecondExamController::class, 'studentSubjects'])->name('exams.quarters.second.student-subjects');
+
+    Route::get('exams/quarters/third-quarter', [ThirdExamController::class, 'index'])->name('exams.quarters.third');
+    Route::get('exams/quarters/third-quarter/chose', [ThirdExamController::class, 'filteredExams'])->name('exams.quarters.third.filtered');
+    Route::post('exams/quarters/third-quarter', [ThirdExamController::class, 'store'])->name('exams.quarters.third');
+    Route::get('exams/quarters/third-quarter/edit', [ThirdExamController::class, 'edit'])->name('exams.quarters.third.edit');
+    Route::post('exams/quarters/third-quarter/delete', [ThirdExamController::class, 'destroy'])->name('exams.quarters.third.delete');
+    Route::post('exams/quarters/third-quarter/student-subjects', [ThirdExamController::class, 'studentSubjects'])->name('exams.quarters.third.student-subjects');
+
 
 
 });

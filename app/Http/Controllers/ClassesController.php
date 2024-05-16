@@ -64,7 +64,7 @@ class ClassesController extends Controller
         $coefficients = [];
         $subjects = $request->subject;
         $i = 0;
-        if ($request->coefficiant) {
+        if ($request->coefficient) {
             foreach ($request->coefficient as $key => $value) {
                 if ($value != null) {
                     $coefficients[$i] = $value;
@@ -73,17 +73,18 @@ class ClassesController extends Controller
 
             }
         }
+//        return response()->json(['rest' => $coefficients]);
+
         if ($request->id) {
 
             $class = Classes::find($request->id);
-            $class->update($validator->validated());
             if ($class == null) {
                 return response()->json(['notfound' => route('notfound')]);
             } else {
+                $class->update($validator->validated());
                 if (!empty($coefficients) && !empty($subjects)) {
                     $class->subjects()->detach();
                     foreach ($subjects as $index => $subjectId) {
-//                        return response()->json(['notfound' => $coefficients[$index]]);
                         $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
                     }
                 }

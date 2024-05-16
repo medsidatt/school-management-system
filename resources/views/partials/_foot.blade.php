@@ -11,6 +11,17 @@
 <!-- Template Main JS File -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
+
+<script src="{{ asset('assets/js/js.dataTables.js') }}"></script>
+<script src="{{ asset('assets/js/js.dataTables.buttons.js') }}"></script>
+<script src="{{ asset('assets/js/js.buttons.dataTables.js') }}"></script>
+<script src="{{ asset('assets/js/jszip.min.js') }}"></script>
+<script src="{{ asset('assets/js/pdfmake.min.js') }}"></script>
+<script src="{{ asset('assets/js/vfs_fonts.js') }}"></script>
+<script src="{{ asset('assets/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('assets/js/buttons.print.min.js') }}"></script>
+
+
 </body>
 
 </html>

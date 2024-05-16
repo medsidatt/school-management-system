@@ -155,6 +155,9 @@
         $('#send-button').on('click', function () {
             let id = $('#id').val();
             let data = new FormData(classForm[0]);
+            classForm.find('input').each(function() {
+                console.log($(this).attr('name') + ': ' + $(this).val());
+            });
             data.append('id', id);
             if (validateFormData()) {
                 $.ajax({
@@ -164,7 +167,6 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log(response)
                         if (response.errors) {
                             clearErrors();
                             $.each(response.errors, function (index, errorMessage) {
@@ -173,9 +175,12 @@
                         } else if (response.success && response.redirect) {
                             clearInputs()
                             window.location.href = response.redirect;
-                        }else if (response.notfound && response.redirect) {
+                        }
+                        else if (response.notfound && response.redirect) {
                             clearInputs()
                             window.location.href = response.redirect;
+                        }else {
+                            console.log(response)
                         }
                     }
                 });

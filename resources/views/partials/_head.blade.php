@@ -32,7 +32,8 @@
     <!-- Template Main CSS File -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/datatable.css') }}" rel="stylesheet">
-
+    <link href="{{ asset('assets/css/dataTables.dataTables.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/buttons.dataTables.css') }}" rel="stylesheet">
 
     <script src="{{ asset('assets/vendor/bootstrap/js/jquery.min.js') }}"></script>
     <link href="{{ asset('assets/vendor/bootstrap/css/jquery.dataTables.min.css') }}" rel="stylesheet">
