@@ -9,10 +9,10 @@ class Student extends Model
 {
     use HasFactory;
 
-    public function parents()
-    {
-        return $this->belongsTo(StudentParent::class, 'parent');
-    }
+//    public function parents()
+//    {
+//        return $this->belongsTo(StudentParent::class, 'parent');
+//    }
 
     public function classes()
     {

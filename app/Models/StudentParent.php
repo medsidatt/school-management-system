@@ -9,10 +9,10 @@ class StudentParent extends Model
 {
     use HasFactory;
     protected $table = 'parents';
-    public function students()
-    {
-        return $this->hasMany(Student::class, 'id');
-    }
+//    public function students()
+//    {
+//        return $this->hasMany(Student::class, 'id');
+//    }
 
     protected $fillable = [
       'nni',

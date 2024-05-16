@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
 
-            $table->bigInteger('parent')->unsigned();
-            $table->foreign('parent')->references('id')->on('parents');
+//            $table->bigInteger('parent')->unsigned();
+//            $table->foreign('parent')->references('id')->on('parents');
 
             $table->bigInteger('class')->unsigned();
             $table->foreign('class')->references('id')->on('classes');

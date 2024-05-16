@@ -70,6 +70,18 @@
             });
 
             $('#classes').DataTable({
+                language: {
+                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                    infoEmpty: 'Aucun enregistrement disponible',
+                    emptyTable: "Aucun enregistrement disponible",
+                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                    zeroRecords: 'Rien trouvé - désolé',
+                    searchPlaceholder: 'Recherche',
+                    search: 'Rechercher',
+                },
+                scrollY: 400,
+                pagingType: 'simple_numbers',
                 ajax: "{{ route('classes') }}",
                 serverSide: true,
                 columns: [

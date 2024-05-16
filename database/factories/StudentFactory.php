@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Classes;
 use App\Models\StudentParent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,8 +22,7 @@ class StudentFactory extends Factory
             'first_name' => $this->faker->name(),
             'last_name' => $this->faker->name(),
             'rim' => $this->faker->randomNumber(7),
-            'class' => 4,
-            'parent' => StudentParent::all()->random()->id,
+            'class' => 1,
             'sex' => 'M',
             'date_of_birth' => '2010-12-12',
             'created_at' => now(),

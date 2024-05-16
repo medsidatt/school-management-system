@@ -3,6 +3,16 @@
 
 @section('content')
 
+    @if(Session::has('success'))
+        <x-alert type="success">
+            {{ Session::get('success') }}!
+        </x-alert>
+    @elseif(Session::has('fail'))
+        <x-alert type="danger">
+            {{ Session::get('fail') }}!
+        </x-alert>
+    @endif
+
     <div class="pagetitle">
         <h1>List des eleves</h1>
         <nav>
@@ -37,7 +47,6 @@
                                 <thead class="table-bordered">
                                 <tr>
                                     <th>#</th>
-                                    <th>Photo</th>
                                     <th>RIM</th>
                                     <th>Nom</th>
                                     <th>Sexe</th>
@@ -81,7 +90,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </table>
+
                         <!-- End Table with stripped rows -->
 
                     </div>
@@ -113,7 +122,6 @@
                 serverSide: true,
                 ajax: "{{ url('students') }}",
                 columns: [
-                    { data: 'id' },
                     { data: 'id' },
                     { data: 'rim' },
                     {

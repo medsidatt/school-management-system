@@ -15,29 +15,29 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'p_first_name' => 'required',
-            'p_last_name' => 'required',
-            'p_sex' => 'required',
-            'p_tel' => [
-                'required',
-                'unique:parents,tel,' . $this->p_id,
-                'digits:8',
-                'numeric',
-                'regex:/^(?:2|3|4)\d{7}$/'
-            ],
-            'p_date_of_birth' => [
-                'required',
-                'date',
-                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
-                'after_or_equal:' . now()->subYears(100)->format('Y-m-d')
-            ],
-
-            'p_nni' => [
-                'required',
-                'numeric',
-                'digits:10',
-                "unique:parents,nni,$this->p_id"
-            ],
+//            'p_first_name' => 'required',
+//            'p_last_name' => 'required',
+//            'p_sex' => 'required',
+//            'p_tel' => [
+//                'required',
+//                'unique:parents,tel,' . $this->p_id,
+//                'digits:8',
+//                'numeric',
+//                'regex:/^(?:2|3|4)\d{7}$/'
+//            ],
+//            'p_date_of_birth' => [
+//                'required',
+//                'date',
+//                'before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+//                'after_or_equal:' . now()->subYears(100)->format('Y-m-d')
+//            ],
+//
+//            'p_nni' => [
+//                'required',
+//                'numeric',
+//                'digits:10',
+//                "unique:parents,nni,$this->p_id"
+//            ],
 
             'first_name' => 'required',
             'last_name' => 'required',

@@ -64,14 +64,15 @@ class ClassesController extends Controller
         $coefficients = [];
         $subjects = $request->subject;
         $i = 0;
-        foreach ($request->coefficient as $key => $value) {
-            if ($value != null) {
-                $coefficients[$i] = $value;
-                $i++;
-            }
+        if ($request->coefficiant) {
+            foreach ($request->coefficient as $key => $value) {
+                if ($value != null) {
+                    $coefficients[$i] = $value;
+                    $i++;
+                }
 
+            }
         }
-//        return response()->json(['notfound' => route('notfound')]);
         if ($request->id) {
 
             $class = Classes::find($request->id);
