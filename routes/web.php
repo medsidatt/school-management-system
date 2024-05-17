@@ -1,9 +1,12 @@
 <?php
 
-use App\Http\Controllers\ExamController;
+
 use App\Http\Controllers\exams\FirstExamController;
 use App\Http\Controllers\exams\SecondExamController;
 use App\Http\Controllers\exams\ThirdExamController;
+use App\Http\Controllers\tests\FirstTestController;
+use App\Http\Controllers\tests\SecondTestController;
+use App\Http\Controllers\tests\ThirdTestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentController;
@@ -123,6 +126,31 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::post('exams/quarters/third-quarter/delete', [ThirdExamController::class, 'destroy'])->name('exams.quarters.third.delete');
     Route::post('exams/quarters/third-quarter/student-subjects', [ThirdExamController::class, 'studentSubjects'])->name('exams.quarters.third.student-subjects');
 
+});
 
+
+
+Route::middleware('isLoggedIn')->group(function () {
+
+    Route::get('tests/quarters/first-quarter', [FirstTestController::class, 'index'])->name('tests.quarters.first');
+    Route::get('tests/quarters/first-quarter/chose', [FirstTestController::class, 'filteredTests'])->name('tests.quarters.first.filtered');
+    Route::post('tests/quarters/first-quarter', [FirstTestController::class, 'store'])->name('tests.quarters.first');
+    Route::get('tests/quarters/first-quarter/edit', [FirstTestController::class, 'edit'])->name('tests.quarters.first.edit');
+    Route::post('tests/quarters/first-quarter/delete', [FirstTestController::class, 'destroy'])->name('tests.quarters.first.delete');
+    Route::post('tests/quarters/first-quarter/student-subjects', [FirstTestController::class, 'studentSubjects'])->name('tests.quarters.first.student-subjects');
+
+    Route::get('tests/quarters/second-quarter', [SecondTestController::class, 'index'])->name('tests.quarters.second');
+    Route::get('tests/quarters/second-quarter/chose', [SecondTestController::class, 'filteredTests'])->name('tests.quarters.second.filtered');
+    Route::post('tests/quarters/second-quarter', [SecondTestController::class, 'store'])->name('tests.quarters.second');
+    Route::get('tests/quarters/second-quarter/edit', [SecondTestController::class, 'edit'])->name('tests.quarters.second.edit');
+    Route::post('tests/quarters/second-quarter/delete', [SecondTestController::class, 'destroy'])->name('tests.quarters.second.delete');
+    Route::post('tests/quarters/second-quarter/student-subjects', [SecondTestController::class, 'studentSubjects'])->name('tests.quarters.second.student-subjects');
+
+    Route::get('tests/quarters/third-quarter', [ThirdTestController::class, 'index'])->name('tests.quarters.third');
+    Route::get('tests/quarters/third-quarter/chose', [ThirdTestController::class, 'filteredTests'])->name('tests.quarters.third.filtered');
+    Route::post('tests/quarters/third-quarter', [ThirdTestController::class, 'store'])->name('tests.quarters.third');
+    Route::get('tests/quarters/third-quarter/edit', [ThirdTestController::class, 'edit'])->name('tests.quarters.third.edit');
+    Route::post('tests/quarters/third-quarter/delete', [ThirdTestController::class, 'destroy'])->name('tests.quarters.third.delete');
+    Route::post('tests/quarters/third-quarter/student-subjects', [ThirdTestController::class, 'studentSubjects'])->name('tests.quarters.third.student-subjects');
 
 });

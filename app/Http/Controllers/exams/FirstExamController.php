@@ -43,7 +43,7 @@ class FirstExamController extends Controller
 
         $exams = Exam::where('student_id', $data['student_id'])
             ->where('subject_id', $data['subject_id'])
-            ->where('quarter', 2)
+            ->where('quarter', 1)
             ->get();
 
         if ($request->input('id')) {

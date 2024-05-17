@@ -3,12 +3,11 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1 class="mb-1">List des note d'exement du 1<sup>er</sup> trimestre</h1>
+        <h1 class="mb-1">Les note du 2<sup>em</sup> devoir</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Exements</a></li>
-                <li class="breadcrumb-item">Exement 1</li>
+                <li class="breadcrumb-item">Devoir 2</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -22,9 +21,9 @@
 
                 <div class="card w-auto">
                     <div class="card-body">
-                        <div class="col"><p class="card-title">Tout les note d'exement du 1er trimestre</p></div>
+                        <div class="col"><p class="card-title">Tout les note du devoir du 2<sup>em</sup> trimestre</p></div>
                         <div class="row mb-2">
-                            <form id="exam-form">
+                            <form id="test-form">
                                 <input id="id" type="hidden" name="id" value="">
                                 <div class="row">
                                     <div class="col-md-8">
@@ -67,7 +66,7 @@
 
                         <hr>
                         <div style="border: 1px solid black; padding: 3px">
-                            <table id="exams" class="table table-striped">
+                            <table id="tests" class="table table-striped">
                                 <thead class="table-bordered">
                                 <tr>
                                     <th>#</th>
@@ -81,7 +80,7 @@
                         </div>
 
 
-                        <div class="modal fade" id="exam-modal" tabindex="-1"
+                        <div class="modal fade" id="test-modal" tabindex="-1"
                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -136,7 +135,7 @@
 
             $('#send-button').click(function (e) {
                 e.preventDefault();
-                let form = $('#exam-form')[0];
+                let form = $('#test-form')[0];
                 let data = new FormData(form);
                 let noteInput = $('#note');
                 let selectedSubject = $('#subject');
@@ -152,7 +151,7 @@
                 data.append('student', selectedStudent.val());
 
                 $.ajax({
-                    url: "{{ route('exams.quarters.first') }}",
+                    url: "{{ route('tests.quarters.second') }}",
                     type: "POST",
                     data: data,
                     dataType: "JSON",
@@ -164,10 +163,10 @@
                             $.each(response.errors, function (field, errorMessage) {
                                 handleFieldError(errorFields[field], errorMessage);
                             });
-                        } else if (response.exam) {
+                        } else if (response.test) {
                             $.alert('la note exist');
                         } else if (response.updated) {
-                            $('#exams').DataTable().ajax.reload();
+                            $('#tests').DataTable().ajax.reload();
                             $('#subject').prop('disabled', false);
                             $('#student').prop('disabled', false);
                             noteInput.val('');
@@ -178,8 +177,8 @@
                                 '</div>');
                         } else {
                             console.log(response.success);
-                            // $('#exams').DataTable().draw();
-                            $('#exams').DataTable().ajax.reload();
+                            // $('#tests').DataTable().draw();
+                            $('#tests').DataTable().ajax.reload();
                             noteInput.val('');
                             $('#subject option:selected').next().attr('selected', 'selected');
                             $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
@@ -202,19 +201,19 @@
             let classId = event.target.value;
             let subjectSelect = $('#subject');
             let studentSelect = $('#student');
-            let table = $('#exams');
+            let table = $('#tests');
 
-            if (classId === '' && $.fn.DataTable.isDataTable('#exams')) {
+            if (classId === '' && $.fn.DataTable.isDataTable('#tests')) {
 
                 table.find('tbody')
                     .html('<tr><td colspan="5" class="dt-empty">Il faut selectioner une classe s\'il vous plait</td></tr>');
             } else {
                 $.ajax({
-                    url: "{{ route('exams.quarters.first.filtered', '') }}",
+                    url: "{{ route('tests.quarters.second.filtered', '') }}",
                     data: {class_id: classId},
                     method: 'GET',
                     success: function (response) {
-                        if ($.fn.DataTable.isDataTable('#exams')) {
+                        if ($.fn.DataTable.isDataTable('#tests')) {
                             table.DataTable().destroy();
                         }
                         studentSelect.empty();
@@ -241,7 +240,7 @@
                                 processing: true,
                                 serverSide: true,
                                 ajax: {
-                                    url: "{{ route('exams.quarters.first.filtered') }}",
+                                    url: "{{ route('tests.quarters.second.filtered') }}",
                                     data: {class_id: classId},
                                 },
                                 scrollY: 400,
@@ -307,12 +306,12 @@
                         btnClass: 'btn-success',
                         action: function () {
                             $.ajax({
-                                url: "{{ route('exams.quarters.first.delete') }}",
+                                url: "{{ route('tests.quarters.second.delete') }}",
                                 method: 'POST',
                                 data: {id: id},
 
                                 success: function () {
-                                    $('#exams').DataTable().ajax.reload();
+                                    $('#tests').DataTable().ajax.reload();
                                     $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
                                         '<strong>Alert</strong> <span>vous avez suprimee une note</span>' +
                                         '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
