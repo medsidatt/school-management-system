@@ -2,6 +2,9 @@
 
 
 use App\Http\Controllers\exams\FirstExamController;
+use App\Http\Controllers\compositions\CompositionController;
+use App\Http\Controllers\compositions\SecondCompositionController;
+use App\Http\Controllers\compositions\ThirdCompositionController;
 use App\Http\Controllers\exams\SecondExamController;
 use App\Http\Controllers\exams\ThirdExamController;
 use App\Http\Controllers\tests\FirstTestController;
@@ -152,5 +155,31 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('tests/quarters/third-quarter/edit', [ThirdTestController::class, 'edit'])->name('tests.quarters.third.edit');
     Route::post('tests/quarters/third-quarter/delete', [ThirdTestController::class, 'destroy'])->name('tests.quarters.third.delete');
     Route::post('tests/quarters/third-quarter/student-subjects', [ThirdTestController::class, 'studentSubjects'])->name('tests.quarters.third.student-subjects');
+
+});
+
+
+Route::middleware('isLoggedIn')->group(function () {
+
+    Route::get('compositions/quarters/first-quarter', [CompositionController::class, 'index'])->name('compositions.quarters.first');
+    Route::get('compositions/quarters/first-quarter/chose', [CompositionController::class, 'filteredCompositions'])->name('compositions.quarters.first.filtered');
+    Route::post('compositions/quarters/first-quarter', [CompositionController::class, 'store'])->name('compositions.quarters.first');
+    Route::get('compositions/quarters/first-quarter/edit', [CompositionController::class, 'edit'])->name('compositions.quarters.first.edit');
+    Route::post('compositions/quarters/first-quarter/delete', [CompositionController::class, 'destroy'])->name('compositions.quarters.first.delete');
+    Route::post('compositions/quarters/first-quarter/student-subjects', [CompositionController::class, 'studentSubjects'])->name('compositions.quarters.first.student-subjects');
+
+    Route::get('compositions/quarters/second-quarter', [SecondCompositionController::class, 'index'])->name('compositions.quarters.second');
+    Route::get('compositions/quarters/second-quarter/chose', [SecondCompositionController::class, 'filteredTests'])->name('compositions.quarters.second.filtered');
+    Route::post('compositions/quarters/second-quarter', [SecondCompositionController::class, 'store'])->name('compositions.quarters.second');
+    Route::get('compositions/quarters/second-quarter/edit', [SecondCompositionController::class, 'edit'])->name('compositions.quarters.second.edit');
+    Route::post('compositions/quarters/second-quarter/delete', [SecondCompositionController::class, 'destroy'])->name('compositions.quarters.second.delete');
+    Route::post('compositions/quarters/second-quarter/student-subjects', [SecondCompositionController::class, 'studentSubjects'])->name('compositions.quarters.second.student-subjects');
+
+    Route::get('compositions/quarters/third-quarter', [ThirdCompositionController::class, 'index'])->name('compositions.quarters.third');
+    Route::get('compositions/quarters/third-quarter/chose', [ThirdCompositionController::class, 'filteredTests'])->name('compositions.quarters.third.filtered');
+    Route::post('compositions/quarters/third-quarter', [ThirdCompositionController::class, 'store'])->name('compositions.quarters.third');
+    Route::get('compositions/quarters/third-quarter/edit', [ThirdCompositionController::class, 'edit'])->name('compositions.quarters.third.edit');
+    Route::post('compositions/quarters/third-quarter/delete', [ThirdCompositionController::class, 'destroy'])->name('compositions.quarters.third.delete');
+    Route::post('compositions/quarters/third-quarter/student-subjects', [ThirdCompositionController::class, 'studentSubjects'])->name('compositions.quarters.third.student-subjects');
 
 });

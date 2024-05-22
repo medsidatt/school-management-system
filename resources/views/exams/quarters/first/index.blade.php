@@ -22,7 +22,7 @@
 
                 <div class="card w-auto">
                     <div class="card-body">
-                        <div class="col"><p class="card-title">Tout les note d'exement du 1er trimestre</p></div>
+                        <div class="col"><p class="card-title">Tout les note d'exement du 1<sup>er</sup> trimestre</p></div>
                         <div class="row mb-2">
                             <form id="exam-form">
                                 <input id="id" type="hidden" name="id" value="">
@@ -223,10 +223,10 @@
                         subjectSelect.append('<option selected value="">Matiere ~</option>');
                         $.each(response.subjects, function (index, value) {
                             subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
-                        }),
+                        });
                             $.each(response.students, function (index, value) {
                                 studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
-                            }),
+                            });
                             table.DataTable({
                                 language: {
                                     info: 'Affichage de la page _PAGE_ sur _PAGES_',
@@ -248,12 +248,7 @@
                                 pagingType: 'simple_numbers',
                                 columns: [
                                     {data: 'stu_id'},
-                                    {
-                                        data: 'stu.fn',
-                                        render: function (data, type, row, meta) {
-                                            return row.stu_fn + ' ' + row.stu_ln;
-                                        }
-                                    },
+                                    {data: 'stu_name'},
                                     {data: 'sub_name'},
                                     {data: 'note', searching: false},
                                     {data: 'action', orderable: false}

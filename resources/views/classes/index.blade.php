@@ -12,6 +12,7 @@
             </ol>
         </nav>
     </div><!-- End Page Title -->
+    {{ request()->url() }}
     <div id="alert"></div>
     @if(Session::has('success'))
         <div class="alert align-center alert-success alert-dismissible fade show" role="alert">

@@ -43,7 +43,7 @@
 
                     <div style="border: 1px black solid; padding: 3px;">
 
-                        <table class="table" id="students">
+                        <table class="table display" id="students" style="width: 100%">
                             <thead>
                             <tr>
                                 <td>N<sup>o</sup></td>

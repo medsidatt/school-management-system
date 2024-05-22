@@ -42,7 +42,7 @@
 
                         <!-- Table with stripped rows -->
                         <div style="padding: 3px; border: 1px solid black">
-                            <table id="students" class="table table-striped">
+                            <table id="students" class="display" style="width: 100%">
                                 <thead class="table-bordered">
                                 <tr>
                                     <th>#</th>
@@ -57,38 +57,38 @@
                             </table>
                         </div>
 
-                            <div class="modal fade" id="student-modal" tabindex="-1"
-                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
+                        <div class="modal fade" id="student-modal" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
 
-                                        <form action="javascript:void(0)" id="deleteForm" name="deleteForm"
-                                              method="POST" enctype="multipart/form-data">
-                                            @method('delete')
-                                            @csrf
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Suprimer
-                                                    un
-                                                    etudiant</h1>
-                                                <button type="button" class="btn-close"
-                                                        data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <h1 id="student-message"></h1>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Returner
-                                                </button>
-                                                <button type="submit" class="btn btn-primary">Suprimer
-                                                </button>
-                                            </div>
-                                        </form>
+                                    <form action="javascript:void(0)" id="deleteForm" name="deleteForm"
+                                          method="POST" enctype="multipart/form-data">
+                                        @method('delete')
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Suprimer
+                                                un
+                                                etudiant</h1>
+                                            <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h1 id="student-message"></h1>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Returner
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Suprimer
+                                            </button>
+                                        </div>
+                                    </form>
 
-                                    </div>
                                 </div>
                             </div>
+                        </div>
 
                         <!-- End Table with stripped rows -->
 
@@ -106,7 +106,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-
 
 
             $('#students').DataTable({
@@ -127,29 +126,33 @@
                             {
                                 extend: ["csv"],
                                 exportOptions: {
-                                    columns: [0,1,2,3,4,5]
+                                    columns: [1, 2, 3, 4, 5]
                                 },
                                 action: newexportation
                             },
                             {
                                 extend: 'excelHtml5',
                                 exportOptions: {
-                                    columns: [0,1,2,3,4,5],
+                                    columns: [1, 2, 3, 4, 5],
                                 },
-                                // titleAttr: 'Excel',
                                 action: newexportation,
+
                             },
                             {
-                                extend: ["pdf"],
+                                extend: ["pdfHtml5"],
                                 exportOptions: {
-                                    columns: [0,1,2,3,4,5],
+                                    columns: [1, 2, 3, 4, 5],
                                 },
                                 action: newexportation,
+                                customize: function (doc) {
+                                    // doc.content[1].margin = [ 150, 0, 15, 0 ]
+                                    // console.log(doc.content[1].getWidth);
+                                }
                             },
                             {
                                 extend: 'print',
                                 exportOptions: {
-                                    columns: [0,1,2,3,4,5],
+                                    columns: [1, 2, 3, 4, 5],
                                 },
                                 action: newexportation,
                             }
@@ -164,21 +167,21 @@
                 serverSide: true,
                 ajax: "{{ url('students') }}",
                 columns: [
-                    { data: 'id' },
-                    { data: 'rim' },
+                    {data: 'id'},
+                    {data: 'rim'},
                     {
                         data: function (row) {
                             return {
-                                display : row.first_name + ' ' + row.last_name
+                                display: row.first_name + ' ' + row.last_name
                             }
                         },
-                        render : function (data) {
+                        render: function (data) {
                             return data.display;
                         }
                     },
-                    { data: 'sex' },
-                    { data: 'classes.name' },
-                    { data: 'date_of_birth' },
+                    {data: 'sex'},
+                    {data: 'classes.name'},
+                    {data: 'date_of_birth'},
                     {
                         data: 'action',
                         name: 'action',

@@ -8,6 +8,7 @@ use App\Models\Exam;
 use App\Models\Student;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class FirstExamController extends Controller
@@ -73,7 +74,7 @@ class FirstExamController extends Controller
             ->join('subjects', 'subjects.id', '=', 'exams.subject_id')
             ->select(
                 'exams.id as id', 'exams.note as note',
-                'students.id as stu_id', 'students.first_name as stu_fn', 'students.last_name as stu_ln',
+                'students.id AS stu_id', DB::raw('CONCAT(students.first_name, students.last_name) AS stu_name'),
                 'subjects.id as sub_id', 'subjects.name as sub_name'
             )
             ->where('quarter', 1)

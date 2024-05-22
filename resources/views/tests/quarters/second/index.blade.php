@@ -247,12 +247,7 @@
                                 pagingType: 'simple_numbers',
                                 columns: [
                                     {data: 'stu_id'},
-                                    {
-                                        data: 'stu.fn',
-                                        render: function (data, type, row, meta) {
-                                            return row.stu_fn + ' ' + row.stu_ln;
-                                        }
-                                    },
+                                    {data: 'stu_name'},
                                     {data: 'sub_name'},
                                     {data: 'note', searching: false},
                                     {data: 'action', orderable: false}
