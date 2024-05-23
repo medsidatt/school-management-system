@@ -163,10 +163,8 @@ Route::middleware('isLoggedIn')->group(function () {
 
     Route::get('compositions/quarters/first-quarter', [CompositionController::class, 'index'])->name('compositions.quarters.first');
     Route::get('compositions/quarters/first-quarter/chose', [CompositionController::class, 'filteredCompositions'])->name('compositions.quarters.first.filtered');
-    Route::post('compositions/quarters/first-quarter', [CompositionController::class, 'store'])->name('compositions.quarters.first');
-    Route::get('compositions/quarters/first-quarter/edit', [CompositionController::class, 'edit'])->name('compositions.quarters.first.edit');
-    Route::post('compositions/quarters/first-quarter/delete', [CompositionController::class, 'destroy'])->name('compositions.quarters.first.delete');
-    Route::post('compositions/quarters/first-quarter/student-subjects', [CompositionController::class, 'studentSubjects'])->name('compositions.quarters.first.student-subjects');
+    Route::get('compositions/quarters/first-quarter/show', [CompositionController::class, 'show'])->name('compositions.quarters.first.show');
+
 
     Route::get('compositions/quarters/second-quarter', [SecondCompositionController::class, 'index'])->name('compositions.quarters.second');
     Route::get('compositions/quarters/second-quarter/chose', [SecondCompositionController::class, 'filteredTests'])->name('compositions.quarters.second.filtered');
