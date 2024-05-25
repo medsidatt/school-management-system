@@ -21,7 +21,8 @@
 
                 <div class="card w-auto">
                     <div class="card-body">
-                        <div class="col"><p class="card-title">Tout les note du devoir du 3<sup>em</sup> trimestre</p></div>
+                        <div class="col"><p class="card-title">Tout les note du devoir du 3<sup>em</sup> trimestre</p>
+                        </div>
                         <div class="row mb-2">
                             <form id="test-form">
                                 <input id="id" type="hidden" name="id" value="">
@@ -169,6 +170,7 @@
                             $('#tests').DataTable().ajax.reload();
                             $('#subject').prop('disabled', false);
                             $('#student').prop('disabled', false);
+                            removeInvalidClasses();
                             noteInput.val('');
                             $('#id').val('');
                             $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
@@ -179,6 +181,7 @@
                             console.log(response.success);
                             // $('#tests').DataTable().draw();
                             $('#tests').DataTable().ajax.reload();
+                            removeInvalidClasses();
                             noteInput.val('');
                             $('#subject option:selected').next().attr('selected', 'selected');
                             $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
@@ -222,45 +225,45 @@
                         subjectSelect.append('<option selected value="">Matiere ~</option>');
                         $.each(response.subjects, function (index, value) {
                             subjectSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
-                        }),
-                            $.each(response.students, function (index, value) {
-                                studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
-                            }),
-                            table.DataTable({
-                                language: {
-                                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
-                                    infoEmpty: 'Aucun enregistrement disponible',
-                                    emptyTable: "Aucun enregistrement disponible",
-                                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
-                                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
-                                    zeroRecords: 'Rien trouvé - désolé',
-                                    searchPlaceholder: 'Recherche',
-                                    search: 'Rechercher',
-                                },
-                                processing: true,
-                                serverSide: true,
-                                ajax: {
-                                    url: "{{ route('tests.quarters.third.filtered') }}",
-                                    data: {class_id: classId},
-                                },
-                                scrollY: 400,
-                                pagingType: 'simple_numbers',
-                                columns: [
-                                    {data: 'stu_id'},
-                                    {data: 'stu_name'},
-                                    {data: 'sub_name'},
-                                    {data: 'note', searching: false},
-                                    {data: 'action', orderable: false}
-                                ]
-                                ,
-                                "createdRow": function (row, data, td) {
-                                    $(row).find('td:eq(0)').attr('data-student-id', data.id);
-                                    $(row).find('td:eq(1)').attr('data-student', data.stu_id);
-                                    $(row).find('td:eq(2)').attr('data-subject', data.sub_id);
-                                    $(row).find('td:eq(3)').attr({'data-note': data.note, 'data-id': data.id});
-                                    $(row).find('td').css('padding', '1px');
-                                }
-                            });
+                        });
+                        $.each(response.students, function (index, value) {
+                            studentSelect.append('<option value="' + value.id + '">' + value.id + ' - ' + value.first_name + ' ' + value.last_name + '</option>');
+                        });
+                        table.DataTable({
+                            language: {
+                                info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                                infoEmpty: 'Aucun enregistrement disponible',
+                                emptyTable: "Aucun enregistrement disponible",
+                                infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                                lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                                zeroRecords: 'Rien trouvé - désolé',
+                                searchPlaceholder: 'Recherche',
+                                search: 'Rechercher',
+                            },
+                            processing: true,
+                            serverSide: true,
+                            ajax: {
+                                url: "{{ route('tests.quarters.third.filtered') }}",
+                                data: {class_id: classId},
+                            },
+                            scrollY: 400,
+                            pagingType: 'simple_numbers',
+                            columns: [
+                                {data: 'stu_id'},
+                                {data: 'stu_name'},
+                                {data: 'sub_name'},
+                                {data: 'note', searching: false},
+                                {data: 'action', orderable: false}
+                            ]
+                            ,
+                            "createdRow": function (row, data, td) {
+                                $(row).find('td:eq(0)').attr('data-student-id', data.id);
+                                $(row).find('td:eq(1)').attr('data-student', data.stu_id);
+                                $(row).find('td:eq(2)').attr('data-subject', data.sub_id);
+                                $(row).find('td:eq(3)').attr({'data-note': data.note, 'data-id': data.id});
+                                $(row).find('td').css('padding', '1px');
+                            }
+                        });
                     }
 
                 });
@@ -325,6 +328,12 @@
                     }
                 }
             });
+        }
+
+        function removeInvalidClasses() {
+            $('#note').removeClass('is-invalid');
+            $('#subject').removeClass('is-invalid');
+            $('#student').removeClass('is-invalid');
         }
 
     </script>

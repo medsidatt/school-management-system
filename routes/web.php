@@ -164,6 +164,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('compositions/quarters/first-quarter', [CompositionController::class, 'index'])->name('compositions.quarters.first');
     Route::get('compositions/quarters/first-quarter/chose', [CompositionController::class, 'filteredCompositions'])->name('compositions.quarters.first.filtered');
     Route::get('compositions/quarters/first-quarter/show', [CompositionController::class, 'show'])->name('compositions.quarters.first.show');
+    Route::get('compositions/quarters/first-quarter/resultsToPdf', [CompositionController::class, 'resultsToPdf'])->name('compositions.quarters.first.resultsToPdf');
 
 
     Route::get('compositions/quarters/second-quarter', [SecondCompositionController::class, 'index'])->name('compositions.quarters.second');

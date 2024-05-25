@@ -173,15 +173,15 @@
                             $('#student').prop('disabled', false);
                             noteInput.val('');
                             idInput.val('');
+                            removeInvalidClasses();
                             $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
                                 '<strong>Modifiee</strong> <span>La note est modifiee avec susses</span>' +
                                 '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                 '</div>');
                         } else {
-                            console.log(response.success);
-                            // $('#tests').DataTable().draw();
                             $('#tests').DataTable().ajax.reload();
                             noteInput.val('');
+                            removeInvalidClasses();
                             $('#subject option:selected').next().attr('selected', 'selected');
                             $('#alert').html('<div class="alert align-center alert-success alert-dismissible fade show" role="alert">' +
                                 '<strong>Ajouter</strong> <span>La note est ajoutee avec susses</span>' +
@@ -328,6 +328,13 @@
                 }
             });
         }
+
+        function removeInvalidClasses() {
+            $('#note').removeClass('is-invalid');
+            $('#subject').removeClass('is-invalid');
+            $('#student').removeClass('is-invalid');
+        }
+
 
     </script>
 

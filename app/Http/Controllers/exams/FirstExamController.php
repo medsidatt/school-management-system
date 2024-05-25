@@ -26,7 +26,7 @@ class FirstExamController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'note' => 'required|numeric',
+            'note' => 'required|numeric|max:20|min:0',
             'student' => 'required',
             'subject' => 'required'
         ]);
