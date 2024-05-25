@@ -166,13 +166,12 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('compositions/quarters/first-quarter/show', [CompositionController::class, 'show'])->name('compositions.quarters.first.show');
     Route::get('compositions/quarters/first-quarter/resultsToPdf', [CompositionController::class, 'resultsToPdf'])->name('compositions.quarters.first.resultsToPdf');
 
-
     Route::get('compositions/quarters/second-quarter', [SecondCompositionController::class, 'index'])->name('compositions.quarters.second');
-    Route::get('compositions/quarters/second-quarter/chose', [SecondCompositionController::class, 'filteredTests'])->name('compositions.quarters.second.filtered');
-    Route::post('compositions/quarters/second-quarter', [SecondCompositionController::class, 'store'])->name('compositions.quarters.second');
-    Route::get('compositions/quarters/second-quarter/edit', [SecondCompositionController::class, 'edit'])->name('compositions.quarters.second.edit');
-    Route::post('compositions/quarters/second-quarter/delete', [SecondCompositionController::class, 'destroy'])->name('compositions.quarters.second.delete');
-    Route::post('compositions/quarters/second-quarter/student-subjects', [SecondCompositionController::class, 'studentSubjects'])->name('compositions.quarters.second.student-subjects');
+    Route::get('compositions/quarters/second-quarter/chose', [SecondCompositionController::class, 'filteredCompositions'])->name('compositions.quarters.second.filtered');
+    Route::get('compositions/quarters/second-quarter/show', [SecondCompositionController::class, 'show'])->name('compositions.quarters.second.show');
+    Route::get('compositions/quarters/second-quarter/resultsToPdf', [SecondCompositionController::class, 'resultsToPdf'])->name('compositions.quarters.second.resultsToPdf');
+
+
 
     Route::get('compositions/quarters/third-quarter', [ThirdCompositionController::class, 'index'])->name('compositions.quarters.third');
     Route::get('compositions/quarters/third-quarter/chose', [ThirdCompositionController::class, 'filteredTests'])->name('compositions.quarters.third.filtered');
