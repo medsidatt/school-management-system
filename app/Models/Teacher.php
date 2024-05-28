@@ -14,6 +14,7 @@ class Teacher extends Model
         'last_name',
         'sex',
         'date_of_birth',
-        'nni'
+        'nni',
+        'img_path'
     ];
 }

@@ -17,6 +17,7 @@ class TeacherPostRequest extends FormRequest
             'first_name' => 'required',
             'last_name' => 'required',
             'sex' => 'required',
+            'img_path' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'date_of_birth' => 'required|date|before_or_equal:' . now()->subYears(19)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(80)->format('Y-m-d'),
             'nni' => "required|unique:teachers,nni,$this->id|numeric|digits:10",
         ];
@@ -25,8 +26,9 @@ class TeacherPostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'date_of_birth.before_or_equal' => 'The student must be at most 13 years old.',
-            'date_of_birth.after_or_equal' => 'The student must be at least 23 years old.',
+            'img_path.image' => 'Le champ :attribute doit être une image.!',
+            'date_of_birth.before_or_equal' => 'L\'enseignant doit être âgé d\'au moin 13 ans.',
+            'date_of_birth.after_or_equal' => 'L\'enseignant doit être âgé d\'au plus 23.',
             'required' => 'L\'attribut :attribute est obligatoire'
         ];
     }
@@ -37,7 +39,7 @@ class TeacherPostRequest extends FormRequest
             'first_name' => 'prenom',
             'last_name' => 'nom',
             'sex' => 'sexe',
-//            'class' => 'classe',
+            'img_path' => 'image',
             'date_of_birth' => 'date de naissance',
             'nni' => 'nni'
         ];

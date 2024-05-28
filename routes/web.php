@@ -79,7 +79,7 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('teachers/{id}/edit', [TeacherController::class, 'edit'])->name('teachers.edit');
     Route::put('teachers/{id}/edit', [TeacherController::class, 'update'])->name('teachers.edit');
     Route::post('teachers/create', [TeacherController::class, 'store'])->name('teachers.create');
-    Route::delete('teachers/{id}/delete', [TeacherController::class, 'destroy'])->name('teachers.delete');
+    Route::post('teachers/delete', [TeacherController::class, 'destroy'])->name('teachers.delete');
 
 });
 
@@ -171,13 +171,12 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('compositions/quarters/second-quarter/show', [SecondCompositionController::class, 'show'])->name('compositions.quarters.second.show');
     Route::get('compositions/quarters/second-quarter/resultsToPdf', [SecondCompositionController::class, 'resultsToPdf'])->name('compositions.quarters.second.resultsToPdf');
 
-
-
     Route::get('compositions/quarters/third-quarter', [ThirdCompositionController::class, 'index'])->name('compositions.quarters.third');
-    Route::get('compositions/quarters/third-quarter/chose', [ThirdCompositionController::class, 'filteredTests'])->name('compositions.quarters.third.filtered');
-    Route::post('compositions/quarters/third-quarter', [ThirdCompositionController::class, 'store'])->name('compositions.quarters.third');
-    Route::get('compositions/quarters/third-quarter/edit', [ThirdCompositionController::class, 'edit'])->name('compositions.quarters.third.edit');
-    Route::post('compositions/quarters/third-quarter/delete', [ThirdCompositionController::class, 'destroy'])->name('compositions.quarters.third.delete');
-    Route::post('compositions/quarters/third-quarter/student-subjects', [ThirdCompositionController::class, 'studentSubjects'])->name('compositions.quarters.third.student-subjects');
+    Route::get('compositions/quarters/third-quarter/chose', [ThirdCompositionController::class, 'filteredCompositions'])->name('compositions.quarters.third.filtered');
+    Route::get('compositions/quarters/third-quarter/show', [ThirdCompositionController::class, 'show'])->name('compositions.quarters.third.show');
+    Route::get('compositions/quarters/third-quarter/resultsToPdf', [ThirdCompositionController::class, 'resultsToPdf'])->name('compositions.quarters.third.resultsToPdf');
+
+
+
 
 });

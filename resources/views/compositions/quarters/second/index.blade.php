@@ -617,22 +617,32 @@
             function resultsToPdf() {
                 $.ajax({
                     url: "{{ route('compositions.quarters.second.resultsToPdf') }}",
-                    data: {"classId": $('#class').val()},
+                    data: { "classId": $('#class').val() },
                     success: function (response) {
-                        const {jsPDF} = window.jspdf;
+                        const { jsPDF } = window.jspdf;
                         var doc = new jsPDF();
 
+                        var startY = 20;
+                        doc.setFontSize(13);
+                        doc.text('RÉPUBLIQUE ISLAMIQUE DE MAURITANIE', 10, startY);
+                        startY += 9;
+                        doc.text('Honneur – Fraternité – Justice', 10, startY);
+                        startY += 9;
+                        doc.text('Ministère de l’Éducation Nationale et de la Réforme du Système Educatif', 10, startY);
+
+                        startY += 9;
+                        doc.text('Resultat du 2em composition', 10, startY);
+
                         $.each(response[0], function (index, student) {
-                            var finalY = doc.previousAutoTable ? doc.previousAutoTable.finalY + 20 : 20;
+                            var finalY = startY + 20;
                             var name = student.student.name;
                             var rim = student.student.rim;
 
-
                             // Add student name
                             doc.setFontSize(12);
-                            doc.text(name, 10, finalY);
+                            doc.text('Nom: ' + name, 10, finalY);
                             finalY += 10;
-                            doc.text('Matricule : Rim ' + rim.toString(), 10, finalY);
+                            doc.text('Matricule: Rim ' + rim.toString(), 10, finalY);
 
                             // Move position for the table
                             finalY += 10;
@@ -650,18 +660,18 @@
                                 head: [['Matiere', 'Note', 'Coefficient']],
                                 body: examData,
                                 theme: 'grid',
-                                styles: {fontSize: 10, cellPadding: 3},
-                                headStyles: {fillColor: [108, 108, 108]},
-                                margin: {left: 10, right: 10},
+                                styles: { fontSize: 10, cellPadding: 3 },
+                                headStyles: { fillColor: [108, 108, 108] },
+                                margin: { left: 10, right: 10 },
                                 columnStyles: {
-                                    0: {cellWidth: 70},
-                                    1: {cellWidth: 40},
-                                    2: {cellWidth: 30}
+                                    0: { cellWidth: 70 },
+                                    1: { cellWidth: 40 },
+                                    2: { cellWidth: 30 }
                                 }
                             });
 
                             // Calculate finalY position for the average text
-                            finalY = doc.previousAutoTable.finalY + 0;
+                            var tableFinalY = doc.autoTable.previous.finalY;
 
                             var total = 0;
                             var sumCoefficient = 0;
@@ -673,22 +683,28 @@
 
                             var average = sumCoefficient !== 0 ? (total / sumCoefficient).toFixed(2) : 0;
 
-                            // Add average
+                            // Add total and average
                             doc.autoTable({
-                                startY: finalY,
+                                startY: tableFinalY,
                                 body: [
-                                    ['Totale', total],
-                                    ['Moyenne generale', average]
+                                    ['Totale', total.toFixed(2)],
+                                    ['Moyenne générale', average]
                                 ],
                                 theme: 'grid',
-                                styles: {fontSize: 10, cellPadding: 3},
-                                margin: {left: 10, right: 10},
+                                styles: { fontSize: 10, cellPadding: 3 },
+                                margin: { left: 10, right: 10 },
                                 columnStyles: {
-                                    0: {cellWidth: 110},
-                                    1: {cellWidth: 30},
+                                    0: { cellWidth: 110 },
+                                    1: { cellWidth: 30 },
                                 },
                                 fontStyle: 'bold',
                             });
+
+                            // Add line separator between students
+                            tableFinalY = doc.autoTable.previous.finalY + 10;
+                            doc.setLineWidth(0.5);
+                            doc.line(10, tableFinalY, 200, tableFinalY);
+                            startY = tableFinalY + 10;
                         });
 
                         doc.save('resultats.pdf');

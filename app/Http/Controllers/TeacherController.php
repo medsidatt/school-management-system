@@ -8,21 +8,37 @@ use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TeacherController extends Controller
 {
     public function index()
     {
-        $teachers = Teacher::all();
-        return view('teachers.index')->with('teachers', $teachers);
+        $teachers = Teacher::select(
+            'id',
+            DB::raw('CONCAT(first_name, " " ,last_name) AS name'),
+            'nni',
+            'date_of_birth',
+            'sex',
+            'img_path'
+        )->get();
+        if (\request()->ajax()) {
+            return datatables()->of($teachers)
+                ->addColumn('action', 'teachers.teacher-action')
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('teachers.index');
     }
 
     public function view($id) {
-        $teacher = Student::find($id);
+        $teacher = Teacher::find($id);
         if ($teacher == null) {
             return redirect('notfound');
         }
-        return view('teachers.show', compact('teacher'));
+        return view('teachers.show', [
+            'teacher' => $teacher
+        ]);
     }
 
     public function create()
@@ -32,7 +48,16 @@ class TeacherController extends Controller
 
     public function store(TeacherPostRequest $request) : RedirectResponse
     {
+
         $validated_request = $request->validated();
+
+        if ($request->hasFile('img_path')) {
+            $image = $request->file('img_path');
+            $path = $image->store('images', 'public');
+            $validated_request['img_path'] = $path;
+
+        }
+
         try {
             DB::beginTransaction();
             Teacher::create($validated_request);
@@ -56,6 +81,14 @@ class TeacherController extends Controller
     public function update(TeacherPostRequest $request, $id)
     {
         $validated_request = $request->validated();
+
+        if ($request->hasFile('img_path')) {
+            $image = $request->file('img_path');
+            $path = $image->store('images', 'public');
+            $validated_request['img_path'] = $path;
+
+        }
+
         $teacher = Teacher::find($id);
         if ($teacher == null) {
             return redirect('notfound');
@@ -69,14 +102,14 @@ class TeacherController extends Controller
 
 
 
-    public function destroy($id)
+    public function destroy()
     {
-        $teacher = Teacher::find($id);
+        $teacher = Teacher::find(\request()->id);
         if ($teacher == null) {
-            return redirect('notfound');
+            return response()->json(['notfound' => route('notfound')]);
         }
         $teacher->delete();
-        return redirect(route('teachers'))->back()->with('success', 'Le professeur est suprimer avec success');
+        return response()->json(['success' => true]);
     }
 
 }
