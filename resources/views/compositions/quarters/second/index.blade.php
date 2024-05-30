@@ -355,8 +355,6 @@
 
             function printFunc(id, classId) {
 
-                console.log($('#class').val());
-
                 $.ajax({
                     data: {
                         "id": id,
@@ -622,6 +620,7 @@
                         const { jsPDF } = window.jspdf;
                         var doc = new jsPDF();
 
+
                         var startY = 20;
                         doc.setFontSize(13);
                         doc.text('RÉPUBLIQUE ISLAMIQUE DE MAURITANIE', 10, startY);
@@ -635,8 +634,8 @@
 
                         $.each(response[0], function (index, student) {
                             var finalY = startY + 20;
-                            var name = student.student.name;
-                            var rim = student.student.rim;
+                            var name = student.name;
+                            var rim = student.rim;
 
                             // Add student name
                             doc.setFontSize(12);
@@ -648,7 +647,7 @@
                             finalY += 10;
 
                             // Prepare data for the table
-                            var examData = student.student.exams.map(exam => [
+                            var examData = Object.values(student.notes).map(exam => [
                                 exam.name,
                                 exam.note.toString(),
                                 exam.coefficient.toString()
@@ -676,7 +675,7 @@
                             var total = 0;
                             var sumCoefficient = 0;
 
-                            $.each(student.student.exams, function (index, exam) {
+                            $.each(student.notes, function (index, exam) {
                                 total += parseFloat(exam.note) * exam.coefficient;
                                 sumCoefficient += exam.coefficient;
                             });
