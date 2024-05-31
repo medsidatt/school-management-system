@@ -87,9 +87,10 @@
                         <table class="table table-responsive" id="teachers">
                             <thead>
                             <tr>
-                                <td>N<sup>o</sup></td>
-                                <td>Nom et prenom</td>
-                                <td>Rim</td>
+                                <td>Photo</td>
+                                <td>Name</td>
+                                <td>NNI</td>
+                                <td>Date de naissance</td>
                                 <td>Sexe</td>
                                 <td>Actions</td>
                             </tr>
@@ -162,6 +163,7 @@
         let subjectsCard = $('#subjects-card');
         let teachersCard = $('#teachers-card');
         let subjectTable = $('#subjects');
+        let teacherTable = $('#teachers');
 
         function reloadStudentTable() {
             return studentsTable.DataTable({
@@ -233,6 +235,64 @@
             $('#id').val('');
         }
 
+        function reloadTeacherTable() {
+            return teacherTable.DataTable({
+                language: {
+                    info: 'Affichage de la page _PAGE_ sur _PAGES_',
+                    infoEmpty: 'Aucun enregistrement disponible',
+                    emptyTable: "Aucun enregistrement disponible",
+                    infoFiltered: '(filtré à partir de _MAX_ enregistrements totaux)',
+                    lengthMenu: 'Afficher les enregistrements _MENU_ par page',
+                    zeroRecords: 'Rien trouvé - désolé',
+                    searchPlaceholder: 'Recherche',
+                    search: 'Rechercher',
+                },
+                scrollY: 400,
+                pagingType: 'simple_numbers',
+                ajax: "{{ route('teachers') }}",
+                serverSide: true,
+                columns: [
+                    {
+                        data: 'img_path',
+                        render: function (image) {
+                            const imagePath = image ? `storage/${image}` : 'storage/images/t_placeholder.jpeg';
+                            return `
+                                        <div class="ratio ratio-1x1 rounded-circle overflow-hidden">
+                                            <img src="{{ asset('${imagePath}') }}" alt="Raeesh">
+                                        </div>
+                                    `;
+                        }
+                    },
+                    {data: 'name'},
+                    {data: 'nni'},
+                    {
+                        data: 'sex',
+                        name: 'sex',
+                        render: function (sex) {
+                            console.log(sex)
+                            return sex === 'M'? 'Homme' : 'Famme';
+                        }
+                    },
+                    {
+                        data: 'date_of_birth',
+                        name: 'date_of_birth',
+                        render: function (timestamp) {
+                            const tempDate = new Date(timestamp);
+                            const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+                            const monthsOfYear = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                            let month = monthsOfYear[tempDate.getMonth()];
+                            let dayOfWeek = daysOfWeek[tempDate.getDay()];
+                            let day = tempDate.getDate();
+                            let year = tempDate.getFullYear();
+                            let date = `${dayOfWeek} ${day < 10 ? 0 : ''}${day} ${month} ${year}`;
+                            return date;
+                        }
+
+                    },
+                    {data: 'action', orderable: false}
+                ]
+            });
+        }
         function reloadSubjectTable() {
             return subjectTable.DataTable({
                 language: {
@@ -280,6 +340,10 @@
             subjectsCard.hide();
             studentsCard.hide();
             teachersCard.show();
+            if ($.fn.dataTable.isDataTable(teacherTable)) {
+                teacherTable.DataTable().destroy();
+            }
+            reloadTeacherTable().ajax.reload();
         }
         function subjectsFunc(event) {
             let activeNav = $(event.target);

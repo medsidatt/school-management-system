@@ -7,6 +7,7 @@ use App\Models\Classes;
 use App\Models\ClassSubject;
 use App\Models\Student;
 use App\Models\Subjects;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
@@ -51,6 +52,7 @@ class ClassesController extends Controller
         ];
 
         $attributes = ['name' => 'nom du matiere'];
+
         $validator = Validator::make($request->all(), [
             'name' => [
                 'required',
@@ -59,50 +61,50 @@ class ClassesController extends Controller
         ], $messages, $attributes);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $coefficients = [];
-        $subjects = $request->subject;
-        $i = 0;
-        if ($request->coefficient) {
-            foreach ($request->coefficient as $key => $value) {
-                if ($value != null) {
-                    $coefficients[$i] = $value;
-                    $i++;
+
+        $validatedData = $validator->validated();
+
+        $coefficients = array_filter($request->coefficient ?? []);
+        $hours = array_filter($request->hour ?? []);
+        $subjects = $request->subject ?? [];
+
+        if (count($subjects) !== count($coefficients) || count($subjects) !== count($hours)) {
+            return response()->json(['errors' => ['subjects' => 'Les sujets, coefficients et heures doivent correspondre.']], 422);
+        }
+
+        try {
+            if ($request->id) {
+                $class = Classes::find($request->id);
+                if (!$class) {
+                    return response()->json(['notfound' => route('notfound')], 404);
                 }
-
-            }
-        }
-//        return response()->json(['rest' => $coefficients]);
-
-        if ($request->id) {
-
-            $class = Classes::find($request->id);
-            if ($class == null) {
-                return response()->json(['notfound' => route('notfound')]);
+                $class->update($validatedData);
             } else {
-                $class->update($validator->validated());
-                if (!empty($coefficients) && !empty($subjects)) {
-                    $class->subjects()->detach();
-                    foreach ($subjects as $index => $subjectId) {
-                        $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
-                    }
-                }
-                $request->session()->put('success', 'Vous avez modifier une nouvelle classe');
-                return response()->json(['success' => true, 'redirect' => route('classes')]);
+                $class = Classes::create($validatedData);
             }
-        } else {
-            $class = Classes::create($validator->validated());
-            if (!empty($coefficients) && !empty($subjects)) {
-                foreach ($subjects as $index => $subjectId) {
-                    $class->subjects()->attach($subjectId, ['coefficient' => $coefficients[$index]]);
-                }
-            }
-            $request->session()->put('success', 'Vous avez creer une nouvelle classe');
-            return response()->json(['success' => true, 'redirect' => route('classes')]);
-        }
 
+            $class->subjects()->detach();
+            if (!empty($subjects)) {
+                foreach ($subjects as $index => $subjectId) {
+                    $class->subjects()->attach($subjectId, [
+                        'coefficient' => $coefficients[$index] ?? null,
+                        'hour' => $hours[$index] ?? null,
+                    ]);
+                }
+            }
+
+            $request->session()->put('success', $request->id ? 'Vous avez modifié une classe' : 'Vous avez créé une nouvelle classe');
+            return response()->json(['success' => true, 'redirect' => route('classes')]);
+
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('Error storing class: ' . $e->getMessage());
+            return response()->json(['error' => 'Une erreur est survenue lors de l\'enregistrement de la classe.'], 500);
+        }
     }
+
 
 
     public function show($id): View

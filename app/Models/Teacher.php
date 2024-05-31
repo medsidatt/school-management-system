@@ -9,6 +9,17 @@ class Teacher extends Model
 {
     use HasFactory;
 
+    public function classes()
+    {
+        return $this->belongsToMany(Classes::class, 'class_teachers');
+    }
+    public function subjects()
+    {
+        return $this->belongsToMany(Subjects::class, 'teacher_subjects')
+            ->withPivot('time')
+            ->withTimestamps();
+    }
+
     protected $fillable = [
         'first_name',
         'last_name',

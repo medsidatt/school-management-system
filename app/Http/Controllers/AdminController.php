@@ -40,6 +40,7 @@ class AdminController extends Controller
         if (Auth::attempt(['username' => $username, 'password' => $password]))
         {
             $request->session()->put('username', $username);
+            $request->session()->put('username', $username);
             return redirect()->intended(route('home'));
         }
         return redirect()->back()->with('fail', 'Le nom d\'utilisateur ou mot de pass incorrect');
@@ -82,7 +83,7 @@ class AdminController extends Controller
             'email' => $request['email']
         ];
 
-        $user = User::create($data);
+        User::create($data);
 
         $request->session()->put('username', $request['username']);
         return redirect()->route('home');

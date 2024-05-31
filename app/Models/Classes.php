@@ -25,7 +25,12 @@ class Classes extends Model
     public function subjects()
     {
         return $this->belongsToMany(Subjects::class, 'class_subjects', 'class', 'subject')
-            ->withPivot('coefficient')
+            ->withPivot('coefficient', 'hour')
+            ->withTimestamps();
+    }
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'class_teachers')
             ->withTimestamps();
     }
 

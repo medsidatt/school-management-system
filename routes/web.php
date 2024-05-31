@@ -17,6 +17,7 @@ use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\ClassesController;
+use Illuminate\Support\Facades\Session;
 
 Route::middleware('isLoggedIn')->group(function () {
     Route::get('/', function () {

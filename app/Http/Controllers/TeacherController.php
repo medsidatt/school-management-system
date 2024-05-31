@@ -31,7 +31,8 @@ class TeacherController extends Controller
         return view('teachers.index');
     }
 
-    public function view($id) {
+    public function view($id)
+    {
         $teacher = Teacher::find($id);
         if ($teacher == null) {
             return redirect('notfound');
@@ -46,7 +47,7 @@ class TeacherController extends Controller
         return view('teachers.create');
     }
 
-    public function store(TeacherPostRequest $request) : RedirectResponse
+    public function store(TeacherPostRequest $request): RedirectResponse
     {
 
         $validated_request = $request->validated();
@@ -55,18 +56,13 @@ class TeacherController extends Controller
             $image = $request->file('img_path');
             $path = $image->store('images', 'public');
             $validated_request['img_path'] = $path;
+        } else
+            $validated_request['img_path'] = null;
 
-        }
+        Teacher::create($validated_request);
 
-        try {
-            DB::beginTransaction();
-            Teacher::create($validated_request);
-            DB::commit();
-            return redirect()->back()->with('success', 'Le professeur est inscrit avec succes');
-        }catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('fail', 'Erreur d\'inscrit cette professeur');
-        }
+        return redirect()->back()->with('success', 'Le professeur est inscrit avec succes');
+
     }
 
     public function edit($id)
@@ -99,7 +95,6 @@ class TeacherController extends Controller
         $teacher->update($validated_request);
         return redirect(route('teachers'))->with('success', 'Les informations de la professeur est modifier avec succes');
     }
-
 
 
     public function destroy()

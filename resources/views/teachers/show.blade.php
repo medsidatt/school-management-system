@@ -23,12 +23,14 @@
 
                         <div class="row mt-2">
                             <div class="col-md-auto">
-                                <img class="image" src="{{ asset($teacher->img_path? 'storage/' .  $teacher->img_path : 'storage/images/t_placeholder.jpeg') }}" style="width: 300px">
+                                <img class="image"
+                                     src="{{ asset($teacher->img_path? 'storage/' .  $teacher->img_path : 'storage/images/t_placeholder.jpeg') }}"
+                                     style="width: 300px">
                             </div>
                             <div class="col-md-auto">
                                 <div class="mt-3">
                                     <p><span
-                                            class="text-secondary">Nom : </span>{{ $teacher->first_name . " ". $teacher->last_name  }}
+                                                class="text-secondary">Nom : </span>{{ $teacher->first_name . " ". $teacher->last_name  }}
                                     </p>
                                     <p><span class="text-secondary">NNI : </span>{{ $teacher->nni }}</p>
                                     <p><span class="text-secondary">Date de naissance : </span>
@@ -39,13 +41,14 @@
                                             $month = $dateOfBirthArray[1];
                                             $year = $dateOfBirthArray[0];
 
-                                            $daysOfMonth = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
+                                            $daysOfMonth = array("Dimanche", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Lundi");
                                             $monthsOfYear = array(
                                                 "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
                                                 "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
                                             );
 
-                                            echo $daysOfMonth[$dayOfWeek - 1] . ' ' . $day . ' ' . $monthsOfYear[$month - 1]. ' ' . $year;
+
+                                            echo $daysOfMonth[$dayOfWeek] . ' ' . $day . ' ' . $monthsOfYear[$month - 1]. ' ' . $year;
                                         @endphp
                                     </p>
 {{--                                    <p><span class="text-secondary">Classe : </span>{{ $student->name }}</p>--}}
