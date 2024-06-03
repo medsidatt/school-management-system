@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeacherPostRequest;
+use App\Models\Classes;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
@@ -33,13 +34,28 @@ class TeacherController extends Controller
 
     public function view($id)
     {
-        $teacher = Teacher::find($id);
+        $teacher = Teacher::with('classes')
+        ->where('id',$id)->first();
         if ($teacher == null) {
             return redirect('notfound');
         }
         return view('teachers.show', [
             'teacher' => $teacher
         ]);
+    }
+
+    public function associateForm()
+    {
+        if (\request()->ajax()) {
+            return response()->json([Classes::all()]);
+        }
+    }
+
+    public function associateSubmit()
+    {
+        if (\request()->ajax()) {
+            return response()->json([\request()->class]);
+        }
     }
 
     public function create()

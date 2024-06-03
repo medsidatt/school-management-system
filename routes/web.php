@@ -76,6 +76,8 @@ Route::middleware('isLoggedIn')->group(function () {
 
     Route::get('teachers', [TeacherController::class, 'index'])->name('teachers');
     Route::get('teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
+    Route::get('teachers/associateForm', [TeacherController::class, 'associateForm'])->name('teachers.associateForm');
+    Route::post('teachers/associateSubmit', [TeacherController::class, 'associateSubmit'])->name('teachers.associateSubmit');
     Route::get('teachers/{id}', [TeacherController::class, 'view'])->name('teachers.show');
     Route::get('teachers/{id}/edit', [TeacherController::class, 'edit'])->name('teachers.edit');
     Route::put('teachers/{id}/edit', [TeacherController::class, 'update'])->name('teachers.edit');
