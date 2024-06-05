@@ -55,6 +55,7 @@
 
                         <hr>
 
+<<<<<<< HEAD
                         <div>
                             <h3>Les classes</h3>
                             <button
@@ -87,6 +88,19 @@
 
                             @foreach($teacher->subjects as $subject)
                                 <span><a class="btn btn-outline-secondary px-lg-5">{{$subject->name}}</a></span>
+=======
+                        <div class="row mt-3">
+                            <h3>Les classes</h3>
+                            <span><button
+                                          class="btn btn-outline-primary" onclick="associateFunc({{ $teacher->id }})">Associer avec classes</button></span>
+                            @if(count($teacher->classes) == 0)
+                                <p class=>Cette prof n'est pas encore associer a
+                                    une classe </p>
+                            @endif
+
+                            @foreach($teacher->classes as $class)
+                                <span><a class="btn btn-outline-primary" href="{{ route('classes.show', $class->id) }}">1AS</a></span>
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
                             @endforeach
                         </div><!-- End row -->
 
@@ -125,6 +139,7 @@
 
 
     <script>
+<<<<<<< HEAD
         $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
@@ -135,6 +150,10 @@
 
 
         var listGroup = $('#list-group'), modalForm = $('#modal-form');
+=======
+
+        var listGroup = $('#list-group');
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
 
         function associateFunc(id) {
             showModal();
@@ -142,7 +161,10 @@
                 url: "{{ route('teachers.associateForm') }}",
                 success: function (response) {
                     clearForm();
+<<<<<<< HEAD
                     modalForm.append(`<input id="id" type="hidden" name="id" value="${id}">`);
+=======
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
                     $.each(response[0], function (index, value) {
                         listGroup.append(`
                             <label class="list-group-item">
@@ -155,6 +177,7 @@
             });
         }
 
+<<<<<<< HEAD
         function associateWithSubFunc(id) {
             showModal();
             $.ajax({
@@ -177,6 +200,10 @@
         function submitForm() {
             var data = new FormData(modalForm[0]);
 
+=======
+        function submitForm() {
+            var data = new FormData($('#modal-form')[0]);
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
             $.ajax({
                 url: "{{ route('teachers.associateSubmit') }}",
                 type: 'POST',
@@ -189,6 +216,7 @@
             });
         }
 
+<<<<<<< HEAD
         function associateWithSubSubmit() {
             var data = new FormData(modalForm[0]);
 
@@ -204,6 +232,8 @@
             });
         }
 
+=======
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
         function clearForm() {
         }
 

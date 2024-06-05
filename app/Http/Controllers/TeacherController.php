@@ -35,14 +35,33 @@ class TeacherController extends Controller
 
     public function view($id)
     {
+<<<<<<< HEAD
         $teacher = Teacher::with('classes', 'subjects')
         ->where('id', $id)->first();
+=======
+        $teacher = Teacher::with('classes')
+        ->where('id',$id)->first();
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
         if ($teacher == null) {
             return redirect('notfound');
         }
         return view('teachers.show', [
             'teacher' => $teacher
         ]);
+    }
+
+    public function associateForm()
+    {
+        if (\request()->ajax()) {
+            return response()->json([Classes::all()]);
+        }
+    }
+
+    public function associateSubmit()
+    {
+        if (\request()->ajax()) {
+            return response()->json([\request()->class]);
+        }
     }
 
     public function create()

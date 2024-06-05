@@ -88,8 +88,11 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
     Route::get('teachers/associateForm', [TeacherController::class, 'associateForm'])->name('teachers.associateForm');
     Route::post('teachers/associateSubmit', [TeacherController::class, 'associateSubmit'])->name('teachers.associateSubmit');
+<<<<<<< HEAD
     Route::get('teachers/associateWithSubForm', [TeacherController::class, 'associateWithSubForm'])->name('teachers.associateWithSubForm');
     Route::post('teachers/associateWithSubSubmit', [TeacherController::class, 'associateWithSubSubmit'])->name('teachers.associateWithSubSubmit');
+=======
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
     Route::get('teachers/{id}', [TeacherController::class, 'view'])->name('teachers.show');
     Route::get('teachers/{id}/edit', [TeacherController::class, 'edit'])->name('teachers.edit');
     Route::put('teachers/{id}/edit', [TeacherController::class, 'update'])->name('teachers.edit');

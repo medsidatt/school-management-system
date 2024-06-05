@@ -51,7 +51,10 @@ return array(
     'App\\Models\\Teacher' => $baseDir . '/app/Models/Teacher.php',
     'App\\Models\\TeacherSubject' => $baseDir . '/app/Models/TeacherSubject.php',
     'App\\Models\\Test' => $baseDir . '/app/Models/Test.php',
+<<<<<<< HEAD
     'App\\Models\\Timetable' => $baseDir . '/app/Models/Timetable.php',
+=======
+>>>>>>> 394fa614d37e3a345a16b3452e7de311ca57b423
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'App\\Providers\\AuthServiceProvider' => $baseDir . '/app/Providers/AuthServiceProvider.php',
