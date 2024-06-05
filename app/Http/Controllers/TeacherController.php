@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeacherPostRequest;
+use App\Models\Classes;
 use App\Models\Student;
+use App\Models\Subjects;
 use App\Models\Teacher;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,8 @@ class TeacherController extends Controller
 
     public function view($id)
     {
-        $teacher = Teacher::find($id);
+        $teacher = Teacher::with('classes', 'subjects')
+        ->where('id', $id)->first();
         if ($teacher == null) {
             return redirect('notfound');
         }
@@ -71,7 +74,9 @@ class TeacherController extends Controller
         if ($teacher == null) {
             return redirect('notfound');
         }
-        return view('teachers.create', compact('teacher'));
+        return view('teachers.create', [
+            'teacher' => $teacher
+        ]);
     }
 
     public function update(TeacherPostRequest $request, $id)
@@ -89,11 +94,49 @@ class TeacherController extends Controller
         if ($teacher == null) {
             return redirect('notfound');
         }
-//        elseif () {
-//
-//        }
+
         $teacher->update($validated_request);
         return redirect(route('teachers'))->with('success', 'Les informations de la professeur est modifier avec succes');
+    }
+
+    public function associateForm()
+    {
+        if (\request()->ajax()) {
+            return response()->json([Classes::all()]);
+        }
+    }
+
+    public function associateSubmit(Request $request)
+    {
+        if (\request()->ajax()) {
+            $classes = $request->class;
+
+            if (count($classes) > 0) {
+                $teacher = Teacher::where('id', $request->id)->first();
+                $teacher->classes()->sync($classes);
+            }
+            return response()->json(['success' => 'attached']);
+        }
+    }
+
+    public function associateWithSubForm()
+    {
+        if (\request()->ajax()) {
+            return response()->json([Subjects::all()]);
+        }
+    }
+
+    public function associateWithSubSubmit(Request $request)
+    {
+        if (\request()->ajax()) {
+            $subjects = $request->subject;
+
+            if (count($subjects) > 0) {
+                $teacher = Teacher::where('id', $request->id)->first();
+                $teacher->subjects()->sync($subjects);
+            }
+            return response()->json(['success' => 'attached']);
+        }
     }
 
 

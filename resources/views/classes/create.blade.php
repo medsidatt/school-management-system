@@ -212,6 +212,9 @@
                             clearInputs()
                             window.location.href = response.redirect;
                         }
+                    },
+                    error: function (response) {
+                        console.log(response);
                     }
                 });
             }

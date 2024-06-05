@@ -17,7 +17,7 @@ use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\ClassesController;
-use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\TimetableController;
 
 Route::middleware('isLoggedIn')->group(function () {
     Route::get('/', function () {
@@ -74,8 +74,22 @@ Route::middleware('isLoggedIn')->group(function () {
 
 Route::middleware('isLoggedIn')->group(function () {
 
+    Route::get('lessons', [TimetableController::class, 'index'])->name('lessons');
+    Route::get('lessons/create', [TimetableController::class, 'create'])->name('lessons.create');
+    Route::post('lessons/create', [TimetableController::class, 'store'])->name('lessons.create');
+    Route::get('lessons/{id}', [TimetableController::class, 'view'])->name('parents.show');
+
+});
+
+
+Route::middleware('isLoggedIn')->group(function () {
+
     Route::get('teachers', [TeacherController::class, 'index'])->name('teachers');
     Route::get('teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
+    Route::get('teachers/associateForm', [TeacherController::class, 'associateForm'])->name('teachers.associateForm');
+    Route::post('teachers/associateSubmit', [TeacherController::class, 'associateSubmit'])->name('teachers.associateSubmit');
+    Route::get('teachers/associateWithSubForm', [TeacherController::class, 'associateWithSubForm'])->name('teachers.associateWithSubForm');
+    Route::post('teachers/associateWithSubSubmit', [TeacherController::class, 'associateWithSubSubmit'])->name('teachers.associateWithSubSubmit');
     Route::get('teachers/{id}', [TeacherController::class, 'view'])->name('teachers.show');
     Route::get('teachers/{id}/edit', [TeacherController::class, 'edit'])->name('teachers.edit');
     Route::put('teachers/{id}/edit', [TeacherController::class, 'update'])->name('teachers.edit');
@@ -176,8 +190,6 @@ Route::middleware('isLoggedIn')->group(function () {
     Route::get('compositions/quarters/third-quarter/chose', [ThirdCompositionController::class, 'filteredCompositions'])->name('compositions.quarters.third.filtered');
     Route::get('compositions/quarters/third-quarter/show', [ThirdCompositionController::class, 'show'])->name('compositions.quarters.third.show');
     Route::get('compositions/quarters/third-quarter/resultsToPdf', [ThirdCompositionController::class, 'resultsToPdf'])->name('compositions.quarters.third.resultsToPdf');
-
-
 
 
 });

@@ -135,7 +135,7 @@
         <li class="nav-item">
             <a class="nav-link {{ !(request()->is('teachers')) ? 'collapsed' : '' }}" href="{{ route('teachers') }}">
                 <i class="bi bi-people-fill"></i>
-                <span>Professeur</span>
+                <span>Professeurs</span>
             </a>
         </li><!-- End Profs Nav -->
 
@@ -152,5 +152,12 @@
                 <span>Matiers</span>
             </a>
         </li><!-- End Subjects Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link {{ !(request()->is('lessons')) ? 'collapsed' : '' }}" href="{{ route('lessons') }}">
+                <i class="bi bi-subtract"></i>
+                <span>Lessons</span>
+            </a>
+        </li><!-- End Timetable Nav -->
     </ul>
 </aside>

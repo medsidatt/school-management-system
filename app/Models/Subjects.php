@@ -29,4 +29,9 @@ class Subjects extends Model
     {
         return $this->hasMany(Test::class);
     }
+
+    public function timetables()
+    {
+        return $this->hasMany(Timetable::class);
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('img_path')->nullable()->change();
+            $table->string('img_path')->nullable();
             $table->unsignedBigInteger('nni')->unique();
 
             $table->char('sex');

@@ -21,17 +21,21 @@ class Classes extends Model
     {
         return $this->hasMany(Student::class, 'class');
     }
+    public function timetables(): HasMany
+    {
+        return $this->hasMany(Timetable::class, 'class_id');
+    }
 
     public function subjects()
     {
         return $this->belongsToMany(Subjects::class, 'class_subjects', 'class', 'subject')
-            ->withPivot('coefficient', 'hour')
+            ->withPivot('hour')
+            ->withPivot('coefficient')
             ->withTimestamps();
     }
     public function teachers()
     {
-        return $this->belongsToMany(Teacher::class, 'class_teachers')
-            ->withTimestamps();
+        return $this->belongsToMany(Teacher::class, 'class_teachers')->withTimestamps();
     }
 
 }

@@ -11,13 +11,17 @@ class Teacher extends Model
 
     public function classes()
     {
-        return $this->belongsToMany(Classes::class, 'class_teachers');
+        return $this->belongsToMany(Classes::class, 'class_teachers')->withTimestamps();
     }
     public function subjects()
     {
         return $this->belongsToMany(Subjects::class, 'teacher_subjects')
-            ->withPivot('time')
             ->withTimestamps();
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(Timetable::class);
     }
 
     protected $fillable = [

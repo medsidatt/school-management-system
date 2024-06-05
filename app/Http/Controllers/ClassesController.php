@@ -123,13 +123,14 @@ class ClassesController extends Controller
         $subjects = Subjects::all();
         $class = Classes::find($id);
         $class_subject = ClassSubject::where('class', $id)->get();
-        if ($class_subject == null) {
+        if (!$class) {
             return redirect()->route('notfound');
         }
+
         return view("classes.create", [
-            'subjects' => $subjects,
+            'subjects' => $subjects?? $subjects,
             'class_name' => $class->name,
-            'class_subjects' => $class_subject,
+            'class_subjects' => $class_subject?? $class_subject,
             'id' => $id
         ]);
     }

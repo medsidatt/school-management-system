@@ -22,6 +22,7 @@ return new class extends Migration
 
 
             $table->integer('coefficient');
+            $table->integer('hour');
 
             $table->timestamps();
         });
